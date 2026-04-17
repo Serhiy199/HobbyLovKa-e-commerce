@@ -37,14 +37,17 @@ Validation or business errors:
 ## Auth routes
 
 ### `GET|POST /api/auth/[...nextauth]`
+
 Handled by Auth.js.
 
 Responsibilities:
+
 - login
 - logout
 - session management
 
 ### `POST /api/auth/register`
+
 Registers a new client account.
 
 Payload:
@@ -60,6 +63,7 @@ Payload:
 ```
 
 Rules:
+
 - email must be unique
 - password is hashed before save
 - created user gets `CLIENT` role
@@ -67,12 +71,15 @@ Rules:
 ## Storefront routes
 
 ### `GET /api/catalog/search`
+
 Client-triggered search by product title.
 
 Query params:
+
 - `q`
 
 ### `POST /api/cart/items`
+
 Adds product to cart.
 
 Payload:
@@ -85,16 +92,20 @@ Payload:
 ```
 
 Notes:
+
 - MVP cart can be session or cookie based
 - authenticated user cart merge can be implemented later
 
 ### `PATCH /api/cart/items/:itemId`
+
 Updates quantity in cart.
 
 ### `DELETE /api/cart/items/:itemId`
+
 Removes product from cart.
 
 ### `POST /api/checkout`
+
 Creates order from current checkout payload.
 
 Payload:
@@ -121,41 +132,52 @@ Payload:
 ```
 
 Rules:
+
 - guest checkout allowed
 - if authenticated, `userId` is attached automatically
 - promo code is optional
 - all totals are recalculated on server
 
 ### `POST /api/wishlist/:productId`
+
 Adds product to authenticated user's wishlist.
 
 ### `DELETE /api/wishlist/:productId`
+
 Removes product from wishlist.
 
 Rules:
+
 - auth required
 
 ### `POST /api/account/addresses`
+
 Creates saved address for authenticated user.
 
 ### `PATCH /api/account/addresses/:addressId`
+
 Updates saved address.
 
 ### `DELETE /api/account/addresses/:addressId`
+
 Deletes saved address.
 
 ### `POST /api/account/change-password`
+
 Changes password for authenticated user.
 
 ### `POST /api/account/reorder/:orderId`
+
 Adds previous order items back to cart.
 
 ## Upload routes
 
 ### `POST /api/upload/product-images`
+
 Uploads one or more product images to Cloudinary.
 
 Rules:
+
 - admin only
 - max 10 gallery images per product
 - validate file type and size before upload
@@ -183,10 +205,13 @@ All admin routes require authenticated `ADMIN` role.
 ### Categories
 
 #### `GET /api/admin/categories`
+
 Returns fixed categories for admin management.
 
 #### `PATCH /api/admin/categories/:categoryId`
+
 Updates:
+
 - `name`
 - `slug`
 - `sortOrder`
@@ -194,29 +219,37 @@ Updates:
 - `seoDescription`
 
 Notes:
+
 - creation and deletion of top-level categories is disabled in MVP
 
 ### Subcategories
 
 #### `GET /api/admin/subcategories`
+
 Supports filters:
+
 - `categoryId`
 
 #### `POST /api/admin/subcategories`
+
 Creates subcategory under fixed category.
 
 #### `PATCH /api/admin/subcategories/:subcategoryId`
+
 Updates subcategory.
 
 #### `DELETE /api/admin/subcategories/:subcategoryId`
+
 Deletes subcategory if allowed by business rules.
 
 ### Field constructor
 
 #### `GET /api/admin/subcategories/:subcategoryId/fields`
+
 Returns field constructor config.
 
 #### `POST /api/admin/subcategories/:subcategoryId/fields`
+
 Creates field.
 
 Payload:
@@ -236,59 +269,75 @@ Payload:
 ```
 
 #### `PATCH /api/admin/fields/:fieldId`
+
 Updates field metadata.
 
 #### `DELETE /api/admin/fields/:fieldId`
+
 Deletes field.
 
 ### Brands
 
 #### `GET /api/admin/brands`
+
 Returns available brands.
 
 #### `POST /api/admin/brands`
+
 Creates brand.
 
 #### `PATCH /api/admin/brands/:brandId`
+
 Updates brand.
 
 #### `DELETE /api/admin/brands/:brandId`
+
 Deletes brand if safe.
 
 ### Products
 
 #### `GET /api/admin/products`
+
 Supports filters:
+
 - `categoryId`
 - `subcategoryId`
 - `brandId`
 - `search`
 
 #### `POST /api/admin/products`
+
 Creates product with base data, images, and dynamic field values.
 
 #### `GET /api/admin/products/:productId`
+
 Returns full admin edit payload.
 
 #### `PATCH /api/admin/products/:productId`
+
 Updates product.
 
 #### `DELETE /api/admin/products/:productId`
+
 Soft delete by setting `isActive = false`.
 
 ### Orders
 
 #### `GET /api/admin/orders`
+
 Supports filters:
+
 - `status`
 - `dateFrom`
 - `dateTo`
 - `search`
 
 #### `GET /api/admin/orders/:orderId`
+
 Returns order detail.
 
 #### `PATCH /api/admin/orders/:orderId/status`
+
 Updates status.
 
 Payload:
@@ -302,20 +351,25 @@ Payload:
 ### Users
 
 #### `GET /api/admin/users`
+
 Returns customer list with summary data.
 
 #### `GET /api/admin/users/:userId`
+
 Returns customer detail, addresses, orders, and assigned promo codes.
 
 #### `PATCH /api/admin/users/:userId`
+
 Updates allowed admin-editable customer fields.
 
 ### Promo codes
 
 #### `GET /api/admin/promo-codes`
+
 Returns promo code list.
 
 #### `POST /api/admin/promo-codes`
+
 Creates promo code.
 
 Payload:
@@ -333,9 +387,11 @@ Payload:
 ```
 
 #### `PATCH /api/admin/promo-codes/:promoCodeId`
+
 Updates promo code.
 
 #### `DELETE /api/admin/promo-codes/:promoCodeId`
+
 Disables or archives promo code.
 
 ## Suggested file mapping

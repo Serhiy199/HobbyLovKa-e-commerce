@@ -91,6 +91,7 @@ vape-shop/
 ## Folder responsibilities
 
 ### `src/app`
+
 Contains route segments, layouts, metadata files, and route handlers.
 
 - `(storefront)` groups all public pages without adding the group name to the URL.
@@ -98,6 +99,7 @@ Contains route segments, layouts, metadata files, and route handlers.
 - `api` contains route handlers for internal mutations and integrations.
 
 ### `src/components`
+
 Contains reusable presentation components.
 
 - `ui` stores generated and wrapped `shadcn/ui` primitives.
@@ -106,11 +108,13 @@ Contains reusable presentation components.
 - `shared` contains cross-zone components used by both storefront and admin.
 
 ### `src/features`
+
 Feature-first application logic for forms, actions, schemas, and view models.
 
 This is the main place for business-oriented slices such as catalog, checkout, wishlist, and promo codes.
 
 ### `src/lib`
+
 Cross-cutting technical modules:
 
 - `auth` for Auth.js config and helpers
@@ -120,6 +124,7 @@ Cross-cutting technical modules:
 - `constants` for stable enums and static config
 
 ### `src/server`
+
 Server-only data and business logic.
 
 - `repositories` talk to Prisma
@@ -129,6 +134,7 @@ Server-only data and business logic.
 Keeping repositories and services out of route files helps the codebase stay testable and scalable.
 
 ### `prisma`
+
 Database schema, migrations, and seed logic.
 
 ## Architectural rules

@@ -50,24 +50,24 @@ enum ProductAvailability {
 }
 
 model User {
-  id                    String            @id @default(cuid())
-  email                 String            @unique
-  passwordHash          String?
-  role                  UserRole          @default(CLIENT)
-  firstName             String?
-  lastName              String?
-  phone                 String?
-  isActive              Boolean           @default(true)
-  emailVerified         DateTime?
-  createdAt             DateTime          @default(now())
-  updatedAt             DateTime          @updatedAt
-  accounts              Account[]
-  sessions              Session[]
-  addresses             Address[]
-  orders                Order[]
-  wishlistItems         WishlistItem[]
-  assignedPromoCodes    PromoCode[]       @relation("AssignedPromoCodes")
-  promoCodeUsages       PromoCodeUsage[]
+  id                 String           @id @default(cuid())
+  email              String           @unique
+  passwordHash       String?
+  role               UserRole         @default(CLIENT)
+  firstName          String?
+  lastName           String?
+  phone              String?
+  isActive           Boolean          @default(true)
+  emailVerified      DateTime?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  accounts           Account[]
+  sessions           Session[]
+  addresses          Address[]
+  orders             Order[]
+  wishlistItems      WishlistItem[]
+  assignedPromoCodes PromoCode[]      @relation("AssignedPromoCodes")
+  promoCodeUsages    PromoCodeUsage[]
 }
 
 model Account {
@@ -105,40 +105,41 @@ model VerificationToken {
 }
 
 model Category {
-  id              String        @id @default(cuid())
-  name            String
-  slug            String        @unique
-  description     String?
-  sortOrder       Int           @default(0)
-  isFixed         Boolean       @default(false)
-  isActive        Boolean       @default(true)
-  seoTitle        String?
-  seoDescription  String?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  subcategories   Subcategory[]
-  products        Product[]
+  id             String        @id @default(cuid())
+  name           String        @unique
+  slug           String        @unique
+  description    String?
+  sortOrder      Int           @default(0)
+  isFixed        Boolean       @default(false)
+  isActive       Boolean       @default(true)
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  subcategories  Subcategory[]
+  products       Product[]
 
   @@index([sortOrder])
   @@index([isActive])
 }
 
 model Subcategory {
-  id              String             @id @default(cuid())
-  categoryId      String
-  name            String
-  slug            String
-  description     String?
-  sortOrder       Int                @default(0)
-  isActive        Boolean            @default(true)
-  seoTitle        String?
-  seoDescription  String?
-  createdAt       DateTime           @default(now())
-  updatedAt       DateTime           @updatedAt
-  category        Category           @relation(fields: [categoryId], references: [id], onDelete: Restrict)
-  fields          SubcategoryField[]
-  products        Product[]
+  id             String             @id @default(cuid())
+  categoryId     String
+  name           String
+  slug           String
+  description    String?
+  sortOrder      Int                @default(0)
+  isActive       Boolean            @default(true)
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  category       Category           @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  fields         SubcategoryField[]
+  products       Product[]
 
+  @@unique([categoryId, name])
   @@unique([categoryId, slug])
   @@index([categoryId, sortOrder])
 }
@@ -158,65 +159,65 @@ model Brand {
 }
 
 model SubcategoryField {
-  id              String                   @id @default(cuid())
-  subcategoryId   String
-  label           String
-  key             String
-  type            SubcategoryFieldType
-  isRequired      Boolean                  @default(false)
-  sortOrder       Int                      @default(0)
-  helpText        String?
-  isFilterable    Boolean                  @default(false)
-  createdAt       DateTime                 @default(now())
-  updatedAt       DateTime                 @updatedAt
-  subcategory     Subcategory              @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
-  options         SubcategoryFieldOption[]
-  productValues   ProductFieldValue[]
+  id            String                   @id @default(cuid())
+  subcategoryId String
+  label         String
+  key           String
+  type          SubcategoryFieldType
+  isRequired    Boolean                  @default(false)
+  sortOrder     Int                      @default(0)
+  helpText      String?
+  isFilterable  Boolean                  @default(false)
+  createdAt     DateTime                 @default(now())
+  updatedAt     DateTime                 @updatedAt
+  subcategory   Subcategory              @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
+  options       SubcategoryFieldOption[]
+  productValues ProductFieldValue[]
 
   @@unique([subcategoryId, key])
   @@index([subcategoryId, sortOrder])
 }
 
 model SubcategoryFieldOption {
-  id          String           @id @default(cuid())
-  fieldId     String
-  label       String
-  value       String
-  sortOrder   Int              @default(0)
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-  field       SubcategoryField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
-  valuesUsed  ProductFieldValue[]
+  id         String              @id @default(cuid())
+  fieldId    String
+  label      String
+  value      String
+  sortOrder  Int                 @default(0)
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+  field      SubcategoryField    @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  valuesUsed ProductFieldValue[]
 
   @@unique([fieldId, value])
   @@index([fieldId, sortOrder])
 }
 
 model Product {
-  id                   String              @id @default(cuid())
-  categoryId           String
-  subcategoryId        String
-  brandId              String?
-  title                String
-  slug                 String              @unique
-  description          String?             @db.Text
-  price                Decimal             @db.Decimal(10, 2)
-  availability         ProductAvailability @default(IN_STOCK)
-  isActive             Boolean             @default(true)
-  isFeaturedNew        Boolean             @default(false)
-  isFeaturedSale       Boolean             @default(false)
-  isFeaturedHit        Boolean             @default(false)
-  seoTitle             String?
-  seoDescription       String?
-  createdAt            DateTime            @default(now())
-  updatedAt            DateTime            @updatedAt
-  category             Category            @relation(fields: [categoryId], references: [id], onDelete: Restrict)
-  subcategory          Subcategory         @relation(fields: [subcategoryId], references: [id], onDelete: Restrict)
-  brand                Brand?              @relation(fields: [brandId], references: [id], onDelete: SetNull)
-  images               ProductImage[]
-  fieldValues          ProductFieldValue[]
-  orderItems           OrderItem[]
-  wishlistItems        WishlistItem[]
+  id             String              @id @default(cuid())
+  categoryId     String
+  subcategoryId  String
+  brandId        String?
+  title          String
+  slug           String              @unique
+  description    String?             @db.Text
+  price          Decimal             @db.Decimal(10, 2)
+  availability   ProductAvailability @default(IN_STOCK)
+  isActive       Boolean             @default(true)
+  isFeaturedNew  Boolean             @default(false)
+  isFeaturedSale Boolean             @default(false)
+  isFeaturedHit  Boolean             @default(false)
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  category       Category            @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  subcategory    Subcategory         @relation(fields: [subcategoryId], references: [id], onDelete: Restrict)
+  brand          Brand?              @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  images         ProductImage[]
+  fieldValues    ProductFieldValue[]
+  orderItems     OrderItem[]
+  wishlistItems  WishlistItem[]
 
   @@index([categoryId])
   @@index([subcategoryId])
@@ -226,33 +227,33 @@ model Product {
 }
 
 model ProductImage {
-  id            String    @id @default(cuid())
-  productId     String
-  url           String
-  publicId      String
-  alt           String?
-  sortOrder     Int       @default(0)
-  isPrimary     Boolean   @default(false)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  product       Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  productId String
+  url       String
+  publicId  String
+  alt       String?
+  sortOrder Int      @default(0)
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@index([productId, sortOrder])
 }
 
 model ProductFieldValue {
-  id              String                  @id @default(cuid())
-  productId       String
-  fieldId         String
-  optionId        String?
-  valueText       String?
-  valueNumber     Decimal?                @db.Decimal(10, 2)
-  valueBoolean    Boolean?
-  createdAt       DateTime                @default(now())
-  updatedAt       DateTime                @updatedAt
-  product         Product                 @relation(fields: [productId], references: [id], onDelete: Cascade)
-  field           SubcategoryField        @relation(fields: [fieldId], references: [id], onDelete: Restrict)
-  option          SubcategoryFieldOption? @relation(fields: [optionId], references: [id], onDelete: Restrict)
+  id           String                  @id @default(cuid())
+  productId    String
+  fieldId      String
+  optionId     String?
+  valueText    String?
+  valueNumber  Decimal?                @db.Decimal(10, 2)
+  valueBoolean Boolean?
+  createdAt    DateTime                @default(now())
+  updatedAt    DateTime                @updatedAt
+  product      Product                 @relation(fields: [productId], references: [id], onDelete: Cascade)
+  field        SubcategoryField        @relation(fields: [fieldId], references: [id], onDelete: Restrict)
+  option       SubcategoryFieldOption? @relation(fields: [optionId], references: [id], onDelete: Restrict)
 
   @@unique([productId, fieldId])
   @@index([fieldId])
@@ -260,29 +261,29 @@ model ProductFieldValue {
 }
 
 model Order {
-  id                      String          @id @default(cuid())
-  userId                   String?
-  promoCodeId              String?
-  status                   OrderStatus     @default(NEW)
-  paymentMethod            PaymentMethod
-  email                    String
-  firstName                String
-  lastName                 String
-  phone                    String
-  city                     String
-  addressLine1             String
-  addressLine2             String?
-  customerNote             String?         @db.Text
-  subtotalAmount           Decimal         @db.Decimal(10, 2)
-  discountAmount           Decimal         @default(0) @db.Decimal(10, 2)
-  totalAmount              Decimal         @db.Decimal(10, 2)
-  promoCodeSnapshot        String?
-  createdAt                DateTime        @default(now())
-  updatedAt                DateTime        @updatedAt
-  user                     User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
-  promoCode                PromoCode?      @relation(fields: [promoCodeId], references: [id], onDelete: SetNull)
-  items                    OrderItem[]
-  promoCodeUsage           PromoCodeUsage?
+  id                String          @id @default(cuid())
+  userId            String?
+  promoCodeId       String?
+  status            OrderStatus     @default(NEW)
+  paymentMethod     PaymentMethod
+  email             String
+  firstName         String
+  lastName          String
+  phone             String
+  city              String
+  addressLine1      String
+  addressLine2      String?
+  customerNote      String?         @db.Text
+  subtotalAmount    Decimal         @db.Decimal(10, 2)
+  discountAmount    Decimal         @default(0) @db.Decimal(10, 2)
+  totalAmount       Decimal         @db.Decimal(10, 2)
+  promoCodeSnapshot String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  user              User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  promoCode         PromoCode?      @relation(fields: [promoCodeId], references: [id], onDelete: SetNull)
+  items             OrderItem[]
+  promoCodeUsage    PromoCodeUsage?
 
   @@index([userId])
   @@index([promoCodeId])
@@ -291,71 +292,71 @@ model Order {
 }
 
 model OrderItem {
-  id                String    @id @default(cuid())
-  orderId           String
-  productId         String
-  productTitle      String
-  productSlug       String
-  unitPrice         Decimal   @db.Decimal(10, 2)
-  quantity          Int
-  lineTotal         Decimal   @db.Decimal(10, 2)
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-  order             Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product           Product   @relation(fields: [productId], references: [id], onDelete: Restrict)
+  id           String   @id @default(cuid())
+  orderId      String
+  productId    String
+  productTitle String
+  productSlug  String
+  unitPrice    Decimal  @db.Decimal(10, 2)
+  quantity     Int
+  lineTotal    Decimal  @db.Decimal(10, 2)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
 
   @@index([orderId])
   @@index([productId])
 }
 
 model Address {
-  id            String    @id @default(cuid())
-  userId        String
-  firstName     String
-  lastName      String
-  phone         String
-  city          String
-  addressLine1  String
-  addressLine2  String?
-  label         String?
-  isDefault     Boolean   @default(false)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @default(cuid())
+  userId       String
+  firstName    String
+  lastName     String
+  phone        String
+  city         String
+  addressLine1 String
+  addressLine2 String?
+  label        String?
+  isDefault    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
 
 model PromoCode {
-  id                   String             @id @default(cuid())
-  code                 String             @unique
-  type                 PromoCodeType      @default(GENERAL)
-  discountType         PromoCodeDiscountType @default(PERCENT)
-  percentValue         Decimal            @db.Decimal(5, 2)
-  minOrderAmount       Decimal            @default(500) @db.Decimal(10, 2)
-  isActive             Boolean            @default(true)
-  startsAt             DateTime?
-  expiresAt            DateTime?
-  assignedUserId       String?
-  createdAt            DateTime           @default(now())
-  updatedAt            DateTime           @updatedAt
-  assignedUser         User?              @relation("AssignedPromoCodes", fields: [assignedUserId], references: [id], onDelete: SetNull)
-  usages               PromoCodeUsage[]
-  orders               Order[]
+  id             String                @id @default(cuid())
+  code           String                @unique
+  type           PromoCodeType         @default(GENERAL)
+  discountType   PromoCodeDiscountType @default(PERCENT)
+  percentValue   Decimal               @db.Decimal(5, 2)
+  minOrderAmount Decimal               @default(500) @db.Decimal(10, 2)
+  isActive       Boolean               @default(true)
+  startsAt       DateTime?
+  expiresAt      DateTime?
+  assignedUserId String?
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+  assignedUser   User?                 @relation("AssignedPromoCodes", fields: [assignedUserId], references: [id], onDelete: SetNull)
+  usages         PromoCodeUsage[]
+  orders         Order[]
 
   @@index([assignedUserId])
   @@index([isActive])
 }
 
 model PromoCodeUsage {
-  id            String    @id @default(cuid())
-  promoCodeId   String
-  userId        String
-  orderId       String
-  createdAt     DateTime  @default(now())
-  promoCode     PromoCode @relation(fields: [promoCodeId], references: [id], onDelete: Cascade)
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  order         Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  id          String    @id @default(cuid())
+  promoCodeId String
+  userId      String
+  orderId     String
+  createdAt   DateTime  @default(now())
+  promoCode   PromoCode @relation(fields: [promoCodeId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order       Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@unique([promoCodeId, orderId])
   @@unique([orderId])
@@ -363,12 +364,12 @@ model PromoCodeUsage {
 }
 
 model WishlistItem {
-  id          String    @id @default(cuid())
-  userId      String
-  productId   String
-  createdAt   DateTime  @default(now())
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId])
   @@index([userId])

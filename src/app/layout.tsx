@@ -15,7 +15,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Voodoo Vape",
-  description: "Phase 1 bootstrap for the Voodoo Vape storefront and admin platform.",
+  description:
+    "Phase 1 bootstrap for the Voodoo Vape storefront and admin platform.",
 };
 
 export default function RootLayout({
@@ -25,7 +26,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="uk" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="bg-background text-foreground antialiased">{children}</body>
+      <body className="bg-background text-foreground antialiased">
+        {children}
+      </body>
     </html>
   );
 }

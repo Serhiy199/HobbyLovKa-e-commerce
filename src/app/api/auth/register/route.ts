@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 
 import { registerSchema } from "@/features/auth/schemas";
 import { hashPassword } from "@/lib/auth/password";
-import { createUser, getUserByEmail } from "@/server/repositories/user.repository";
+import {
+  createUser,
+  getUserByEmail,
+} from "@/server/repositories/user.repository";
 
 export async function POST(request: Request) {
   const json = await request.json();
