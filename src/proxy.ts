@@ -1,7 +1,20 @@
 import { UserRole } from "@prisma/client";
+import NextAuth from "next-auth";
 import { NextResponse } from "next/server";
 
-import { auth } from "@/lib/auth/auth";
+import { authConfig } from "@/lib/auth/auth.config";
+
+const { auth } = NextAuth(authConfig);
+
+function createLoginRedirectUrl(req: Parameters<Parameters<typeof auth>[0]>[0]) {
+  const loginUrl = new URL("/login", req.url);
+  loginUrl.searchParams.set(
+    "callbackUrl",
+    `${req.nextUrl.pathname}${req.nextUrl.search}`,
+  );
+
+  return loginUrl;
+}
 
 export default auth((req) => {
   const pathname = req.nextUrl.pathname;
@@ -9,7 +22,7 @@ export default auth((req) => {
 
   if (pathname.startsWith("/admin")) {
     if (!isLoggedIn) {
-      return NextResponse.redirect(new URL("/login", req.url));
+      return NextResponse.redirect(createLoginRedirectUrl(req));
     }
 
     if (req.auth?.user?.role !== UserRole.ADMIN) {
@@ -18,7 +31,7 @@ export default auth((req) => {
   }
 
   if (pathname.startsWith("/account") && !isLoggedIn) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    return NextResponse.redirect(createLoginRedirectUrl(req));
   }
 
   return NextResponse.next();
