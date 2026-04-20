@@ -14,6 +14,7 @@ import {
   AdminStatsGrid,
 } from "@/components/admin/admin-primitives";
 import { Badge } from "@/components/ui/badge";
+import { AdminBrandCrud } from "@/features/catalog/components/admin-brand-crud";
 import { getAdminBrandsPageData } from "@/server/queries/admin-catalog.query";
 
 type SearchParams = Promise<{ selected?: string }>;
@@ -39,9 +40,9 @@ export default async function AdminBrandsPage({
     <div className="space-y-6">
       <AdminPageHeader
         eyebrow="Бренди"
-        title="Бренди вже читаються як окрема сутність адмінки"
-        description="Ми підключили реальний read-side для брендів: список, сортування, стан активності та пов'язані товари. Це знімає залежність від коду на наступному CRUD-кроці."
-        badges={["Етап 5", "Catalog core"]}
+        title="CRUD для брендів уже працює в адмінці"
+        description="Тепер адміністратор може створювати, редагувати й видаляти бренди, а також керувати сортуванням і активністю без втручання в код."
+        badges={["Етап 5", "CRUD готовий"]}
       />
 
       <AdminStatsGrid
@@ -54,7 +55,7 @@ export default async function AdminBrandsPage({
           {
             label: "Активні",
             value: activeCount.toString(),
-            note: "Це майбутня опора для швидкого toggle активності в списку.",
+            note: "Активність бренду вже керується прямо з CRUD-форми.",
           },
           {
             label: "З товарами",
@@ -74,12 +75,12 @@ export default async function AdminBrandsPage({
           { href: "/admin/products", label: "Відкрити товари", variant: "outline" },
           { href: "/admin", label: "Повернутися до огляду", variant: "outline" },
         ]}
-        note="Наступним кроком тут додамо create/edit/delete брендів, швидке керування isActive та sortOrder."
+        note="Створення, оновлення і видалення брендів уже працюють на цій сторінці; адміну не потрібно лізти в код, щоб керувати брендовою структурою каталогу."
       />
 
       <AdminSectionCard
         title="Список і деталі брендів"
-        description="Ліва колонка дає огляд брендів, права — detail panel для обраного бренду і пов'язаних товарів."
+        description="Ліва колонка дає огляд брендів, права — detail panel для обраного бренду, CRUD-інструменти й пов'язані товари."
       >
         <AdminSplitLayout
           list={
@@ -134,7 +135,7 @@ export default async function AdminBrandsPage({
                   <AdminEmptyState
                     icon={getAdminModuleIcon("brands")}
                     title="Бренди ще не додані"
-                    description="Після першого CRUD-кроку ця сторінка стане основним місцем керування брендами без втручання в код."
+                    description="Створіть перший бренд нижче, і ця сторінка одразу стане робочим центром керування брендами."
                   />
                 }
               />
@@ -146,8 +147,8 @@ export default async function AdminBrandsPage({
                 <div>
                   <p className="text-sm font-medium">Деталі бренду</p>
                   <p className="text-muted-foreground text-sm leading-6">
-                    Detail panel уже показує живі дані бренду та його зв'язок із
-                    каталогом.
+                    Detail panel уже показує живі дані бренду, а нижче розміщена
+                    робоча форма update/delete.
                   </p>
                 </div>
 
@@ -157,7 +158,8 @@ export default async function AdminBrandsPage({
                       label: "Назва",
                       value: selectedBrand.name,
                       note:
-                        selectedBrand.description ?? "Опис бренду поки не заповнений.",
+                        selectedBrand.description ??
+                        "Опис бренду поки не заповнений.",
                     },
                     {
                       label: "Slug",
@@ -171,13 +173,24 @@ export default async function AdminBrandsPage({
                       label: "Статус",
                       value: selectedBrand.isActive ? "Активний" : "Неактивний",
                       note:
-                        "На наступному кроці саме тут і в списку з'явиться керування isActive та sortOrder.",
+                        "Активність і порядок сортування вже можна змінювати через CRUD-форму нижче.",
                     },
                     {
                       label: "Пов'язані товари",
                       value: selectedBrand._count.products.toString(),
                     },
                   ]}
+                />
+
+                <AdminBrandCrud
+                  selectedBrand={{
+                    id: selectedBrand.id,
+                    description: selectedBrand.description,
+                    isActive: selectedBrand.isActive,
+                    name: selectedBrand.name,
+                    slug: selectedBrand.slug,
+                    sortOrder: selectedBrand.sortOrder,
+                  }}
                 />
 
                 <AdminSectionCard
@@ -207,11 +220,15 @@ export default async function AdminBrandsPage({
                 </AdminSectionCard>
               </div>
             ) : (
-              <AdminEmptyState
-                icon={getAdminModuleIcon("brands")}
-                title="Немає обраного бренду"
-                description="Після появи першого бренду тут автоматично з'явиться детальний перегляд."
-              />
+              <div className="space-y-4">
+                <AdminEmptyState
+                  icon={getAdminModuleIcon("brands")}
+                  title="Немає обраного бренду"
+                  description="Можна одразу створити новий бренд нижче, або вибрати існуючий зі списку для редагування."
+                />
+
+                <AdminBrandCrud selectedBrand={null} />
+              </div>
             )
           }
         />
