@@ -82,3 +82,8 @@ Detailed structure is documented in `docs/project-structure.md`.
 - `npm run typecheck` runs TypeScript without emitting files.
 - `npm run build` verifies the production build.
 - `npm run format` formats the codebase with Prettier.
+
+Для входу в адмінку спробуй:
+
+логін: admin@voodoovape.local
+пароль: Admin12345!
