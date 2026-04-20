@@ -1,6 +1,6 @@
 "use client";
 
-import type { FormEvent } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
@@ -17,6 +17,7 @@ import {
 } from "@/components/admin/admin-primitives";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -176,6 +177,11 @@ type NormalizedSubmittedFieldValue =
       fieldId: string;
       valueText: string;
     };
+
+type SelectedUploadPreview = {
+  name: string;
+  url: string;
+};
 
 type ProductStepId =
   | "category"
@@ -530,6 +536,33 @@ function StepBadge({
   );
 }
 
+function ProductThumbnail({
+  alt,
+  src,
+}: {
+  alt: string;
+  src: string;
+}) {
+  const [hasError, setHasError] = useState(false);
+
+  return (
+    <div className="overflow-hidden rounded-2xl border border-border/70 bg-muted/30">
+      {src && !hasError ? (
+        <img
+          src={src}
+          alt={alt}
+          className="h-32 w-full object-cover"
+          onError={() => setHasError(true)}
+        />
+      ) : (
+        <div className="text-muted-foreground flex h-32 items-center justify-center text-sm">
+          Preview unavailable
+        </div>
+      )}
+    </div>
+  );
+}
+
 function WizardStepHeader({
   currentStep,
 }: {
@@ -586,6 +619,10 @@ function ProductWizard({
   const [imageItemErrors, setImageItemErrors] = useState<
     Record<number, { publicId?: string; url?: string }>
   >({});
+  const [selectedUploadFiles, setSelectedUploadFiles] = useState<File[]>([]);
+  const [selectedUploadPreviews, setSelectedUploadPreviews] = useState<
+    SelectedUploadPreview[]
+  >([]);
   const [generalMessage, setGeneralMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -614,9 +651,30 @@ function ProductWizard({
     setFieldErrors({});
     setDynamicErrors({});
     setImageItemErrors({});
+    setSelectedUploadFiles([]);
     setGeneralMessage(null);
     setSuccessMessage(null);
   }, [initialDynamicValues, initialImages, initialValues, productId]);
+
+  useEffect(() => {
+    if (selectedUploadFiles.length === 0) {
+      setSelectedUploadPreviews([]);
+      return;
+    }
+
+    const previews = selectedUploadFiles.map((file) => ({
+      name: file.name,
+      url: URL.createObjectURL(file),
+    }));
+
+    setSelectedUploadPreviews(previews);
+
+    return () => {
+      previews.forEach((preview) => {
+        URL.revokeObjectURL(preview.url);
+      });
+    };
+  }, [selectedUploadFiles]);
 
   const clearMessages = () => {
     setGeneralMessage(null);
@@ -698,6 +756,81 @@ function ProductWizard({
       },
     ]);
     clearMessages();
+  };
+
+  const handleFileSelection = (event: ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files ?? []);
+    setSelectedUploadFiles(files);
+    clearMessages();
+  };
+
+  const uploadSelectedFiles = async () => {
+    if (selectedUploadFiles.length === 0) {
+      setGeneralMessage("Оберіть один або кілька файлів для upload.");
+      return;
+    }
+
+    if (images.length + selectedUploadFiles.length > 11) {
+      setGeneralMessage(
+        "Разом із вже доданими зображеннями товар може містити максимум 11 фото.",
+      );
+      return;
+    }
+
+    const uploadFormData = new FormData();
+    uploadFormData.append("existingCount", images.length.toString());
+
+    selectedUploadFiles.forEach((file) => {
+      uploadFormData.append("files", file);
+    });
+
+    setGeneralMessage(null);
+    setSuccessMessage(null);
+
+    startTransition(async () => {
+      const response = await fetch("/api/upload/product-images", {
+        body: uploadFormData,
+        method: "POST",
+      });
+
+      const payload = (await response.json().catch(() => null)) as
+        | {
+            data?: {
+              files?: Array<{
+                publicId: string;
+                url: string;
+              }>;
+            };
+            error?: {
+              message?: string;
+            };
+            message?: string;
+            success?: boolean;
+          }
+        | null;
+
+      if (!response.ok || !payload?.success) {
+        setGeneralMessage(
+          payload?.error?.message || "Не вдалося завантажити зображення.",
+        );
+        return;
+      }
+
+      const uploadedFiles = payload.data?.files ?? [];
+
+      setImages((current) => [
+        ...current,
+        ...uploadedFiles.map((file, index) => ({
+          alt: "",
+          isPrimary: current.length === 0 && index === 0,
+          publicId: file.publicId,
+          url: file.url,
+        })),
+      ]);
+      setSelectedUploadFiles([]);
+      setSelectedUploadPreviews([]);
+      setSuccessMessage(payload.message || "Зображення завантажено.");
+    });
   };
 
   const updateImage = (
@@ -1289,15 +1422,85 @@ function ProductWizard({
       {currentStep === "images" ? (
         <AdminFormSection
           title="Крок 5. Images"
-          description="Поки без Cloudinary uploader, але вже з повною логікою головного фото, галереї та payload для збереження."
+          description="Cloudinary upload уже підключений. Після аплоаду форма автоматично підставляє url/publicId у payload товару."
         >
           <div className="space-y-4">
+            <div className="rounded-2xl border border-border/70 bg-card/90 p-4">
+              <div className="space-y-3">
+                <p className="text-sm font-medium">Cloudinary upload</p>
+                <p className="text-muted-foreground text-sm leading-6">
+                  Доступні формати: JPG, PNG, WebP. Ліміт: 5 MB на файл.
+                </p>
+                <AdminField
+                  label="Файли зображень"
+                  hint="Можна вибрати одразу кілька файлів."
+                >
+                  <Input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    multiple
+                    onChange={handleFileSelection}
+                  />
+                </AdminField>
+
+                {selectedUploadFiles.length ? (
+                  <div className="rounded-2xl border border-border/70 bg-muted/30 p-3">
+                    <p className="text-sm font-medium">
+                      До upload вибрано {selectedUploadFiles.length} файл(и)
+                    </p>
+                    <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                      {selectedUploadPreviews.map((preview) => (
+                        <div
+                          key={preview.url}
+                          className="space-y-2 rounded-2xl border border-border/70 bg-card/80 p-3"
+                        >
+                          <ProductThumbnail alt={preview.name} src={preview.url} />
+                          <p className="truncate text-xs">{preview.name}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {selectedUploadFiles.map((file) => (
+                        <Badge key={`${file.name}-${file.lastModified}`} variant="outline">
+                          {file.name}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={uploadSelectedFiles}
+                    disabled={isPending || selectedUploadFiles.length === 0}
+                  >
+                    {isPending ? "Завантажуємо..." : "Завантажити в Cloudinary"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={addImage}
+                    disabled={images.length >= 11}
+                  >
+                    Додати вручну
+                  </Button>
+                </div>
+              </div>
+            </div>
+
             {images.length ? (
               images.map((image, index) => (
                 <div
                   key={image.id ?? `${mode}-image-${index}`}
                   className="space-y-4 rounded-2xl border border-border/70 bg-card/90 p-4"
                 >
+                  <ProductThumbnail
+                    alt={image.alt || image.publicId || `Product image ${index + 1}`}
+                    src={image.url}
+                  />
+
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div className="flex flex-wrap gap-2">
                       {image.isPrimary ? (
@@ -1371,14 +1574,7 @@ function ProductWizard({
               <p className="text-muted-foreground text-sm leading-6">
                 Правила цього кроку: 1 головне фото, до 10 фото в галереї.
               </p>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={addImage}
-                disabled={images.length >= 11}
-              >
-                Додати фото
-              </Button>
+              <Badge variant="outline">{images.length}/11 фото</Badge>
             </div>
           </div>
         </AdminFormSection>

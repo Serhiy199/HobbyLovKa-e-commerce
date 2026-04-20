@@ -1,5 +1,6 @@
 
 .next-build-check
+.next-build-verify
 .env
 .env.local
 .env.production.local
