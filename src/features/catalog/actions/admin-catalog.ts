@@ -5,12 +5,15 @@ import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/auth/permissions";
 import {
   createAdminBrand,
+  createAdminProduct,
   createAdminSubcategoryField,
   createAdminSubcategory,
   deleteAdminBrand,
+  deleteAdminProduct,
   deleteAdminSubcategoryField,
   deleteAdminSubcategory,
   updateAdminBrand,
+  updateAdminProduct,
   updateAdminSubcategoryField,
   updateAdminSubcategory,
   updateCategory,
@@ -22,6 +25,7 @@ function revalidateCatalogAdminPaths() {
   revalidatePath("/admin/subcategories");
   revalidatePath("/admin/fields");
   revalidatePath("/admin/brands");
+  revalidatePath("/admin/products");
 }
 
 async function withAdminAccess<TData>(
@@ -142,6 +146,42 @@ export async function updateBrandAction(input: unknown) {
 export async function deleteBrandAction(input: unknown) {
   return withAdminAccess(async () => {
     const result = await deleteAdminBrand(input);
+
+    if (result.ok) {
+      revalidateCatalogAdminPaths();
+    }
+
+    return result;
+  });
+}
+
+export async function createProductAction(input: unknown) {
+  return withAdminAccess(async () => {
+    const result = await createAdminProduct(input);
+
+    if (result.ok) {
+      revalidateCatalogAdminPaths();
+    }
+
+    return result;
+  });
+}
+
+export async function updateProductAction(input: unknown) {
+  return withAdminAccess(async () => {
+    const result = await updateAdminProduct(input);
+
+    if (result.ok) {
+      revalidateCatalogAdminPaths();
+    }
+
+    return result;
+  });
+}
+
+export async function deleteProductAction(input: unknown) {
+  return withAdminAccess(async () => {
+    const result = await deleteAdminProduct(input);
 
     if (result.ok) {
       revalidateCatalogAdminPaths();

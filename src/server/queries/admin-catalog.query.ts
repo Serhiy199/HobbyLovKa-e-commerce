@@ -1,9 +1,11 @@
 import {
   getAdminBrandById,
+  getAdminProductById,
   getAdminSubcategoryFieldById,
   getAdminSubcategoryById,
   getFixedAdminCategoryById,
   listAdminBrands,
+  listAdminProducts,
   listAdminSubcategoryFields,
   listAdminSubcategories,
   listFixedAdminCategories,
@@ -75,5 +77,32 @@ export async function getAdminFieldsPageData(selectedId?: string) {
     subcategories,
     fields,
     selectedField,
+  };
+}
+
+export async function getAdminProductsPageData(
+  selectedId?: string,
+  filters?: {
+    brandId?: string;
+    categoryId?: string;
+    search?: string;
+    subcategoryId?: string;
+  },
+) {
+  const categories = await listFixedAdminCategories();
+  const subcategories = await listAdminSubcategories();
+  const brands = await listAdminBrands();
+  const products = await listAdminProducts(filters);
+  const resolvedSelectedId = resolveSelectedId(products, selectedId);
+  const selectedProduct = resolvedSelectedId
+    ? await getAdminProductById(resolvedSelectedId)
+    : null;
+
+  return {
+    brands,
+    categories,
+    products,
+    selectedProduct,
+    subcategories,
   };
 }
