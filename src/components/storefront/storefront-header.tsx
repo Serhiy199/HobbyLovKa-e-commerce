@@ -9,10 +9,13 @@ import {
   UserIcon,
 } from "lucide-react";
 
+import { StorefrontLogo } from "@/components/storefront/storefront-logo";
 import { StorefrontMobileMenu } from "@/components/storefront/mobile-menu";
 import {
+  storefrontBrand,
   storefrontCategories,
   storefrontInfoLinks,
+  storefrontMainNavigation,
 } from "@/components/storefront/storefront-config";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -35,7 +38,7 @@ export function StorefrontHeader() {
             </span>
           </div>
           <p className="truncate">
-            Сайт призначений виключно для осіб віком 18+
+            {storefrontBrand.legalAgeNotice}
           </p>
           <nav className="hidden items-center gap-4 lg:flex" aria-label="Корисні посилання">
             {storefrontInfoLinks.slice(0, 4).map((link) => (
@@ -50,19 +53,7 @@ export function StorefrontHeader() {
       <div className="mx-auto flex w-full max-w-screen-2xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
         <StorefrontMobileMenu />
 
-        <Link href="/" className="group flex min-w-fit items-center gap-3">
-          <span className="grid size-11 place-items-center rounded-lg bg-foreground text-lg font-semibold text-background shadow-sm transition group-hover:bg-primary">
-            VV
-          </span>
-          <span className="hidden leading-tight sm:block">
-            <span className="block text-lg font-semibold tracking-tight">
-              Voodoo Vape
-            </span>
-            <span className="text-muted-foreground block text-xs">
-              vape shop та аксесуари
-            </span>
-          </span>
-        </Link>
+        <StorefrontLogo />
 
         <Link
           href="/catalog"
@@ -130,16 +121,29 @@ export function StorefrontHeader() {
         className="hidden border-t border-border/60 bg-card/80 lg:block"
         aria-label="Основні категорії"
       >
-        <div className="mx-auto flex w-full max-w-screen-2xl items-center gap-1 px-4 sm:px-6 lg:px-8">
-          {storefrontCategories.map((category) => (
-            <Link
-              key={category.href}
-              href={category.href}
-              className="text-muted-foreground hover:text-foreground border-b-2 border-transparent px-4 py-3 text-sm font-medium transition hover:border-primary"
-            >
-              {category.label}
-            </Link>
-          ))}
+        <div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-1">
+            {storefrontMainNavigation.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-muted-foreground hover:text-foreground border-b-2 border-transparent px-4 py-3 text-sm font-medium transition hover:border-primary"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+          <div className="flex items-center gap-1">
+            {storefrontCategories.map((category) => (
+              <Link
+                key={category.href}
+                href={category.href}
+                className="text-muted-foreground hover:text-foreground rounded-md px-3 py-2 text-sm transition hover:bg-accent"
+              >
+                {category.label}
+              </Link>
+            ))}
+          </div>
         </div>
       </nav>
     </header>

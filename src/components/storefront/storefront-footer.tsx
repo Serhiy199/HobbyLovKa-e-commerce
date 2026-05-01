@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
 
+import { StorefrontLogo } from "@/components/storefront/storefront-logo";
 import {
   storefrontCategories,
   storefrontInfoLinks,
@@ -39,19 +40,7 @@ export function StorefrontFooter() {
 
       <div className="mx-auto grid w-full max-w-screen-2xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-2 lg:grid-cols-[1.25fr_1fr_1fr_1fr] lg:px-8">
         <div className="space-y-4">
-          <Link href="/" className="inline-flex items-center gap-3">
-            <span className="grid size-11 place-items-center rounded-lg bg-foreground text-lg font-semibold text-background">
-              VV
-            </span>
-            <span>
-              <span className="block text-lg font-semibold tracking-tight">
-                Voodoo Vape
-              </span>
-              <span className="text-muted-foreground block text-sm">
-                Storefront foundation для vape-магазину
-              </span>
-            </span>
-          </Link>
+          <StorefrontLogo />
           <p className="text-muted-foreground max-w-sm text-sm leading-6">
             Магазин для повнолітніх клієнтів із фокусом на зрозумілий каталог,
             швидкий пошук, прозорі умови та зручний шлях до покупки.

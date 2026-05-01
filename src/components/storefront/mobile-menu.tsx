@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { MenuIcon, SearchIcon, ShoppingBagIcon, UserIcon } from "lucide-react";
 
+import { StorefrontLogo } from "@/components/storefront/storefront-logo";
 import {
   storefrontCategories,
   storefrontInfoLinks,
+  storefrontMainNavigation,
 } from "@/components/storefront/storefront-config";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,7 +39,8 @@ export function StorefrontMobileMenu() {
       </SheetTrigger>
       <SheetContent side="left" className="w-full max-w-sm overflow-y-auto p-0">
         <SheetHeader className="border-b border-border/70 px-5 py-4 text-left">
-          <SheetTitle>Voodoo Vape</SheetTitle>
+          <StorefrontLogo compact />
+          <SheetTitle className="sr-only">Мобільне меню магазину</SheetTitle>
           <SheetDescription>
             Каталог, пошук, кабінет і кошик в одному швидкому меню.
           </SheetDescription>
@@ -66,6 +69,20 @@ export function StorefrontMobileMenu() {
               Кошик
             </Link>
           </div>
+
+          <Separator />
+
+          <nav className="grid gap-2" aria-label="Основна навігація">
+            {storefrontMainNavigation.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="rounded-lg border border-border/70 bg-background px-3 py-2 text-sm font-medium"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
 
           <Separator />
 

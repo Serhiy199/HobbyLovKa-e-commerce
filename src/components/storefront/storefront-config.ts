@@ -7,6 +7,20 @@ import {
   TruckIcon,
 } from "lucide-react";
 
+export const storefrontBrand = {
+  name: "Voodoo Vape",
+  legalAgeNotice: "Сайт призначений виключно для осіб віком 18+",
+  tagline: "vape shop та аксесуари",
+  logoSrc: "/images/mr-logo.png",
+};
+
+export const storefrontMainNavigation = [
+  { href: "/", label: "Головна" },
+  { href: "/catalog", label: "Каталог" },
+  { href: "/category", label: "Категорії" },
+  { href: "/account", label: "Акаунт" },
+];
+
 export const storefrontCategories = [
   {
     href: "/category/electronic-cigarettes",
@@ -59,7 +73,7 @@ export const storefrontTrustItems = [
   {
     icon: TruckIcon,
     title: "Швидка доставка",
-    description: "Нова Пошта та кур'єрські сценарії для майбутнього checkout.",
+    description: "Доставка по Україні з прозорими умовами для кожного замовлення.",
   },
   {
     icon: ShieldCheckIcon,
@@ -69,7 +83,7 @@ export const storefrontTrustItems = [
   {
     icon: CreditCardIcon,
     title: "Зручна оплата",
-    description: "Готівка, карта або інші способи на наступних етапах.",
+    description: "Готівка, карта або інші способи оплати на етапі checkout.",
   },
   {
     icon: BadgePercentIcon,
