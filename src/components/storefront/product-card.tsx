@@ -33,7 +33,7 @@ const badgeTones: Record<
   sale: "sale",
 };
 
-const currencyFormatter = new Intl.NumberFormat("uk-UA", {
+export const currencyFormatter = new Intl.NumberFormat("uk-UA", {
   currency: "UAH",
   maximumFractionDigits: 0,
   style: "currency",
@@ -120,11 +120,9 @@ export function StorefrontProductCard({
           </div>
 
           <div className="mt-auto space-y-3">
-            <div className="flex items-end justify-between gap-3">
-              <span className={storefrontPatterns.price}>
-                {currencyFormatter.format(product.price)}
-              </span>
-            </div>
+            <span className={storefrontPatterns.price}>
+              {currencyFormatter.format(product.price)}
+            </span>
 
             <Link
               href={product.href}
