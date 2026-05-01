@@ -9,8 +9,6 @@ import {
 import { StorefrontCategoryCard } from "@/components/storefront/category-card";
 import { StorefrontProductGrid } from "@/components/storefront/product-grid";
 import {
-  storefrontCategories,
-  storefrontFeaturedProducts,
   storefrontHomePromos,
 } from "@/components/storefront/storefront-config";
 import {
@@ -23,6 +21,9 @@ import {
   storefrontPatterns,
 } from "@/components/storefront/storefront-primitives";
 import { Input } from "@/components/ui/input";
+import { getStorefrontHomePageData } from "@/server/queries/storefront-catalog.query";
+
+export const dynamic = "force-dynamic";
 
 const popularSearches = [
   "POD-системи",
@@ -51,7 +52,9 @@ const merchandisingBlocks = [
   },
 ];
 
-export default function StorefrontHomePage() {
+export default async function StorefrontHomePage() {
+  const { categories, featuredProducts } = await getStorefrontHomePageData();
+
   return (
     <>
       <StorefrontSection spacing="lg" className="overflow-hidden">
@@ -153,7 +156,7 @@ export default function StorefrontHomePage() {
           }
         />
         <StorefrontGrid variant="categories">
-          {storefrontCategories.map((category) => (
+          {categories.map((category) => (
             <StorefrontCategoryCard key={category.href} category={category} />
           ))}
         </StorefrontGrid>
@@ -170,7 +173,11 @@ export default function StorefrontHomePage() {
             </StorefrontActionLink>
           }
         />
-        <StorefrontProductGrid products={storefrontFeaturedProducts} />
+        <StorefrontProductGrid
+          products={featuredProducts}
+          emptyTitle="Активні товари ще не додані"
+          emptyDescription="Створіть активні товари в адмінці, позначте їх як new, sale або hit, і вони з'являться на storefront."
+        />
       </StorefrontSection>
 
       <StorefrontSection tone="muted">
