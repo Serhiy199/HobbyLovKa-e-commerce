@@ -35,13 +35,13 @@ const popularSearches = [
 
 const merchandisingBlocks = [
   {
-    description: "Добірки new, sale та hit будуть наповнюватися товарами з адмінки на наступному кроці.",
+    description: "Добірки new, sale та hit допомагають швидко перейти до найпомітніших пропозицій каталогу.",
     href: "/catalog?badge=hit",
     label: "Популярні товари",
   },
   {
     description: "Окрема зона для акційних товарів, промокодів і бонусних пропозицій.",
-    href: "/sale",
+    href: "/catalog?badge=sale",
     label: "Акції та кешбек",
   },
   {

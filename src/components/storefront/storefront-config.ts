@@ -85,12 +85,13 @@ export const storefrontCategories: StorefrontCategory[] = [
 ];
 
 export const storefrontInfoLinks = [
-  { href: "/delivery", label: "Доставка та оплата" },
-  { href: "/about", label: "Про нас" },
+  { href: "/delivery", label: "Доставка" },
+  { href: "/payment", label: "Оплата" },
   { href: "/contacts", label: "Контакти" },
-  { href: "/blog", label: "Блог" },
-  { href: "/cashback", label: "Кешбек" },
-  { href: "/sale", label: "Акції" },
+  { href: "/about", label: "Про нас" },
+  { href: "/faq", label: "FAQ" },
+  { href: "/privacy", label: "Конфіденційність" },
+  { href: "/terms", label: "Умови" },
 ];
 
 export const storefrontTrustItems = [

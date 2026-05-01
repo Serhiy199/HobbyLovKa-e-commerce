@@ -97,7 +97,7 @@ export function StorefrontFooter() {
 
       <div className="border-t border-border/70">
         <div className="text-muted-foreground mx-auto flex w-full max-w-screen-2xl flex-col gap-2 px-4 py-4 text-xs sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
-          <p>© 2026 Voodoo Vape. Storefront Foundation.</p>
+          <p>© 2026 Voodoo Vape. Тільки для повнолітніх клієнтів.</p>
           <div className="flex gap-4">
             <Link href="/privacy">Політика конфіденційності</Link>
             <Link href="/terms">Умови використання</Link>
