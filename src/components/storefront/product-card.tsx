@@ -1,0 +1,144 @@
+import Link from "next/link";
+import {
+  HeartIcon,
+  ImageIcon,
+  ShoppingCartIcon,
+  StarIcon,
+} from "lucide-react";
+
+import type {
+  StorefrontProductBadge,
+  StorefrontProductCardItem,
+} from "@/components/storefront/product-types";
+import {
+  StorefrontBadge,
+  StorefrontCard,
+  storefrontPatterns,
+} from "@/components/storefront/storefront-primitives";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+const badgeLabels: Record<StorefrontProductBadge, string> = {
+  hit: "Топ",
+  new: "Новинка",
+  sale: "Акція",
+};
+
+const badgeTones: Record<
+  StorefrontProductBadge,
+  React.ComponentProps<typeof StorefrontBadge>["tone"]
+> = {
+  hit: "hit",
+  new: "new",
+  sale: "sale",
+};
+
+const currencyFormatter = new Intl.NumberFormat("uk-UA", {
+  currency: "UAH",
+  maximumFractionDigits: 0,
+  style: "currency",
+});
+
+export function StorefrontProductCard({
+  product,
+}: {
+  product: StorefrontProductCardItem;
+}) {
+  const isAvailable = product.availability === "in_stock";
+
+  return (
+    <StorefrontCard interactive className="group/card h-full p-3 sm:p-4">
+      <div className="flex h-full flex-col gap-3">
+        <div className="relative">
+          <Link
+            href={product.href}
+            className="grid aspect-square place-items-center overflow-hidden rounded-lg bg-muted/70"
+            aria-label={product.title}
+          >
+            {product.imageSrc ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={product.imageSrc}
+                alt={product.imageAlt ?? product.title}
+                className="h-full w-full object-cover transition duration-300 group-hover/card:scale-[1.03]"
+              />
+            ) : (
+              <span className="grid size-16 place-items-center rounded-lg bg-card text-muted-foreground shadow-sm">
+                <ImageIcon className="size-8" />
+              </span>
+            )}
+          </Link>
+
+          {product.badges?.length ? (
+            <div className="absolute left-2 top-2 flex flex-wrap gap-1.5">
+              {product.badges.map((badge) => (
+                <StorefrontBadge key={badge} tone={badgeTones[badge]}>
+                  {badgeLabels[badge]}
+                </StorefrontBadge>
+              ))}
+            </div>
+          ) : null}
+
+          <Button
+            variant="outline"
+            size="icon"
+            className="absolute right-2 top-2 size-9 rounded-lg bg-card/90"
+            aria-label="Додати товар в обране"
+          >
+            <HeartIcon className="size-4" />
+          </Button>
+        </div>
+
+        <div className="flex min-h-0 flex-1 flex-col gap-3">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-muted-foreground truncate text-xs font-medium uppercase tracking-[0.12em]">
+                {product.brand ?? "Voodoo"}
+              </span>
+              <span
+                className={cn(
+                  "shrink-0 rounded-full px-2 py-0.5 text-xs font-medium",
+                  isAvailable
+                    ? "bg-emerald-500/10 text-emerald-700"
+                    : "bg-muted text-muted-foreground",
+                )}
+              >
+                {isAvailable ? "В наявності" : "Немає"}
+              </span>
+            </div>
+
+            <Link href={product.href} className={storefrontPatterns.productTitle}>
+              {product.title}
+            </Link>
+
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <StarIcon className="size-3.5 fill-amber-400 text-amber-400" />
+              <span>{product.rating?.toFixed(1) ?? "5.0"}</span>
+              <span>·</span>
+              <span>{product.reviewCount ?? 0} відгуків</span>
+            </div>
+          </div>
+
+          <div className="mt-auto space-y-3">
+            <div className="flex items-end justify-between gap-3">
+              <span className={storefrontPatterns.price}>
+                {currencyFormatter.format(product.price)}
+              </span>
+            </div>
+
+            <Link
+              href={product.href}
+              className={cn(
+                buttonVariants({ variant: isAvailable ? "default" : "outline" }),
+                "h-10 w-full rounded-lg gap-2",
+              )}
+            >
+              <ShoppingCartIcon className="size-4" />
+              {isAvailable ? "До кошика" : "Детальніше"}
+            </Link>
+          </div>
+        </div>
+      </div>
+    </StorefrontCard>
+  );
+}

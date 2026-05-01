@@ -7,8 +7,10 @@ import {
 } from "lucide-react";
 
 import { StorefrontCategoryCard } from "@/components/storefront/category-card";
+import { StorefrontProductGrid } from "@/components/storefront/product-grid";
 import {
   storefrontCategories,
+  storefrontFeaturedProducts,
   storefrontHomePromos,
 } from "@/components/storefront/storefront-config";
 import {
@@ -33,7 +35,7 @@ const popularSearches = [
 
 const merchandisingBlocks = [
   {
-    description: "Підготуємо місце для new/sale/hit добірок, які прийдуть з адмінки на наступних кроках.",
+    description: "Добірки new, sale та hit будуть наповнюватися товарами з адмінки на наступному кроці.",
     href: "/catalog?flag=hit",
     label: "Популярні товари",
   },
@@ -159,6 +161,20 @@ export default function StorefrontHomePage() {
 
       <StorefrontSection>
         <StorefrontSectionHeader
+          eyebrow="Товарна вітрина"
+          title="Популярні товари"
+          description="Базова картка товару вже підтримує badges, бренд, рейтинг, наявність, ціну та кнопку додавання в кошик як UI-placeholder."
+          action={
+            <StorefrontActionLink href="/catalog" variant="outline" size="default">
+              Весь каталог
+            </StorefrontActionLink>
+          }
+        />
+        <StorefrontProductGrid products={storefrontFeaturedProducts} />
+      </StorefrontSection>
+
+      <StorefrontSection tone="muted">
+        <StorefrontSectionHeader
           eyebrow="Магазинна логіка"
           title="Блоки, які ведуть клієнта до покупки"
           description="Добірки, акції, бренди й швидкі сценарії вибору допомагають швидше перейти від потреби до потрібного товару."
@@ -204,7 +220,9 @@ export default function StorefrontHomePage() {
           </div>
           <div className="flex flex-wrap gap-2">
             <BadgeCheckIcon className="size-5 text-primary" />
-            <span className="text-sm text-background/80">Категорії та пошук завжди поруч</span>
+            <span className="text-sm text-background/80">
+              Категорії та пошук завжди поруч
+            </span>
           </div>
         </div>
       </StorefrontSection>

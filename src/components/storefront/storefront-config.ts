@@ -14,6 +14,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import type { StorefrontProductCardItem } from "@/components/storefront/product-types";
+
 export const storefrontBrand = {
   name: "Voodoo Vape",
   legalAgeNotice: "Сайт призначений виключно для осіб віком 18+",
@@ -143,9 +145,66 @@ export const storefrontHomePromos = [
     label: "Стартові набори",
   },
   {
-    description: "Майбутній блок для товарів з прапорцями new, sale та hit з адмін-панелі.",
+    description: "Добірка для товарів з прапорцями new, sale та hit з адмін-панелі.",
     href: "/catalog?collection=featured",
     icon: SparklesIcon,
     label: "Топ добірки",
+  },
+];
+
+export const storefrontFeaturedProducts: StorefrontProductCardItem[] = [
+  {
+    availability: "in_stock",
+    badges: ["hit", "new"],
+    brand: "Vaporesso",
+    href: "/product/vaporesso-xros-pro-2-pod-kit",
+    price: 1599,
+    rating: 4.9,
+    reviewCount: 24,
+    slug: "vaporesso-xros-pro-2-pod-kit",
+    title: "Vaporesso XROS Pro 2 Pod Kit",
+  },
+  {
+    availability: "in_stock",
+    badges: ["sale"],
+    brand: "Oxva",
+    href: "/product/oxva-xlim-pro-2-kit",
+    price: 1399,
+    rating: 4.8,
+    reviewCount: 18,
+    slug: "oxva-xlim-pro-2-kit",
+    title: "Oxva Xlim Pro 2 Pod Kit",
+  },
+  {
+    availability: "in_stock",
+    badges: ["new"],
+    brand: "Elfliq",
+    href: "/product/elfliq-strawberry-ice-30ml",
+    price: 349,
+    rating: 4.7,
+    reviewCount: 11,
+    slug: "elfliq-strawberry-ice-30ml",
+    title: "Elfliq Strawberry Ice 30 мл",
+  },
+  {
+    availability: "out_of_stock",
+    badges: ["hit"],
+    brand: "Lost Vape",
+    href: "/product/lost-vape-ursa-nano-pro",
+    price: 1299,
+    rating: 4.9,
+    reviewCount: 32,
+    slug: "lost-vape-ursa-nano-pro",
+    title: "Lost Vape Ursa Nano Pro",
+  },
+  {
+    availability: "in_stock",
+    brand: "Voopoo",
+    href: "/product/voopoo-vinci-cartridge",
+    price: 179,
+    rating: 4.6,
+    reviewCount: 9,
+    slug: "voopoo-vinci-cartridge",
+    title: "Картридж Voopoo Vinci 2 мл",
   },
 ];
