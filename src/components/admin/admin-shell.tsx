@@ -39,7 +39,7 @@ export function AdminShell({
 }) {
   return (
     <main className="min-h-screen">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 sm:px-6 lg:flex-row lg:items-start lg:px-8">
+      <div className="flex w-full flex-col gap-6 px-4 py-4 sm:px-6 lg:flex-row lg:items-start lg:px-8">
         <aside className="hidden lg:sticky lg:top-4 lg:block lg:w-88 lg:shrink-0">
           <div className="space-y-4">
             <Card className="border-border/70 bg-card/95 shadow-sm">
