@@ -9,6 +9,7 @@ import {
   StorefrontPageHeader,
   StorefrontSection,
 } from "@/components/storefront/storefront-primitives";
+import { normalizeCatalogFilters } from "@/lib/storefront/catalog-filters";
 import {
   getActiveStorefrontSubcategoryBySlug,
   listActiveStorefrontProducts,
@@ -21,18 +22,25 @@ type SubcategoryPageProps = {
     categorySlug: string;
     subcategorySlug: string;
   }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default async function SubcategoryPage({ params }: SubcategoryPageProps) {
+export default async function SubcategoryPage({
+  params,
+  searchParams,
+}: SubcategoryPageProps) {
   const { categorySlug, subcategorySlug } = await params;
+  const filters = normalizeCatalogFilters(await searchParams);
   const [subcategory, products] = await Promise.all([
     getActiveStorefrontSubcategoryBySlug({ categorySlug, subcategorySlug }),
-    listActiveStorefrontProducts({ categorySlug, subcategorySlug }),
+    listActiveStorefrontProducts({ ...filters, categorySlug, subcategorySlug }),
   ]);
 
   if (!subcategory) {
     notFound();
   }
+
+  const basePath = `/category/${categorySlug}/${subcategorySlug}`;
 
   return (
     <>
@@ -50,7 +58,7 @@ export default async function SubcategoryPage({ params }: SubcategoryPageProps) 
         title={subcategory.name}
         description={
           subcategory.description ??
-          "Товари підкатегорії з характеристиками, які керуються з адмін-панелі."
+          "Товари підкатегорії з характеристиками, які допомагають швидко звузити вибір."
         }
       />
 
@@ -77,7 +85,7 @@ export default async function SubcategoryPage({ params }: SubcategoryPageProps) 
                     </div>
                   ) : (
                     <p className="text-muted-foreground text-sm">
-                      Поле доступне для фільтрації товарів цієї підкатегорії.
+                      Це поле доступне для уточнення товарів цієї підкатегорії.
                     </p>
                   )}
                 </div>
@@ -89,9 +97,14 @@ export default async function SubcategoryPage({ params }: SubcategoryPageProps) 
 
       <StorefrontSection>
         <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
-          <CatalogFilterSidebar />
+          <CatalogFilterSidebar basePath={basePath} filters={filters} />
           <div>
-            <CatalogToolbar count={products.length} title={subcategory.name} />
+            <CatalogToolbar
+              basePath={basePath}
+              count={products.length}
+              filters={filters}
+              title={subcategory.name}
+            />
             <StorefrontProductGrid
               products={products}
               emptyTitle="У цій підкатегорії ще немає активних товарів"

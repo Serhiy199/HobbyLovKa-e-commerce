@@ -7,6 +7,12 @@ import type {
 import type { StorefrontCategory } from "@/components/storefront/storefront-config";
 import { storefrontCategories } from "@/components/storefront/storefront-config";
 import { prisma } from "@/lib/prisma/client";
+import type {
+  CatalogAvailabilityFilter,
+  CatalogBadgeFilter,
+  CatalogPriceRangeFilter,
+  CatalogSortFilter,
+} from "@/lib/storefront/catalog-filters";
 
 const storefrontCategorySelect = {
   id: true,
@@ -232,16 +238,95 @@ function mapProductToCard(product: StorefrontProductListRecord): StorefrontProdu
   };
 }
 
-function productBaseWhere(input?: {
+type StorefrontProductQueryInput = {
+  availability?: CatalogAvailabilityFilter;
+  badge?: CatalogBadgeFilter;
   brandSlug?: string;
   categorySlug?: string;
   search?: string;
+  priceRange?: CatalogPriceRangeFilter;
   subcategorySlug?: string;
-}): Prisma.ProductWhereInput {
+};
+
+function resolvePriceWhere(
+  priceRange?: CatalogPriceRangeFilter,
+): Prisma.DecimalFilter<"Product"> | undefined {
+  if (priceRange === "under-500") {
+    return { lt: 500 };
+  }
+
+  if (priceRange === "500-1500") {
+    return { gte: 500, lte: 1500 };
+  }
+
+  if (priceRange === "1500-plus") {
+    return { gte: 1500 };
+  }
+
+  return undefined;
+}
+
+function resolveBadgeWhere(
+  badge?: CatalogBadgeFilter,
+): Prisma.ProductWhereInput | undefined {
+  if (badge === "new") {
+    return { isFeaturedNew: true };
+  }
+
+  if (badge === "sale") {
+    return { isFeaturedSale: true };
+  }
+
+  if (badge === "hit") {
+    return { isFeaturedHit: true };
+  }
+
+  return undefined;
+}
+
+function resolveAvailability(
+  availability?: CatalogAvailabilityFilter,
+): ProductAvailability | undefined {
+  if (availability === "in_stock") {
+    return ProductAvailability.IN_STOCK;
+  }
+
+  if (availability === "out_of_stock") {
+    return ProductAvailability.OUT_OF_STOCK;
+  }
+
+  return undefined;
+}
+
+function resolveProductOrderBy(sort?: CatalogSortFilter): Prisma.ProductOrderByWithRelationInput[] {
+  if (sort === "price-asc") {
+    return [{ price: "asc" }, { title: "asc" }];
+  }
+
+  if (sort === "price-desc") {
+    return [{ price: "desc" }, { title: "asc" }];
+  }
+
+  if (sort === "popular") {
+    return [
+      { isFeaturedHit: "desc" },
+      { isFeaturedNew: "desc" },
+      { isFeaturedSale: "desc" },
+      { createdAt: "desc" },
+    ];
+  }
+
+  return [{ createdAt: "desc" }, { title: "asc" }];
+}
+
+function productBaseWhere(input?: StorefrontProductQueryInput): Prisma.ProductWhereInput {
   const search = input?.search?.trim();
 
   return {
     isActive: true,
+    availability: resolveAvailability(input?.availability),
+    price: resolvePriceWhere(input?.priceRange),
+    ...resolveBadgeWhere(input?.badge),
     category: {
       isActive: true,
       slug: input?.categorySlug,
@@ -361,15 +446,19 @@ export async function getActiveStorefrontSubcategoryBySlug(input: {
 }
 
 export async function listActiveStorefrontProducts(input?: {
+  availability?: CatalogAvailabilityFilter;
+  badge?: CatalogBadgeFilter;
   brandSlug?: string;
   categorySlug?: string;
   limit?: number;
+  priceRange?: CatalogPriceRangeFilter;
   search?: string;
+  sort?: CatalogSortFilter;
   subcategorySlug?: string;
 }) {
   const products = await prisma.product.findMany({
     where: productBaseWhere(input),
-    orderBy: [{ createdAt: "desc" }, { title: "asc" }],
+    orderBy: resolveProductOrderBy(input?.sort),
     take: input?.limit,
     select: storefrontProductListSelect,
   });

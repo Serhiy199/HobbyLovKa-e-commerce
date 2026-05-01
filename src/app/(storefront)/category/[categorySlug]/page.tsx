@@ -11,6 +11,7 @@ import {
   StorefrontSection,
   storefrontPatterns,
 } from "@/components/storefront/storefront-primitives";
+import { normalizeCatalogFilters } from "@/lib/storefront/catalog-filters";
 import {
   getActiveStorefrontCategoryBySlug,
   listActiveStorefrontProducts,
@@ -22,18 +23,25 @@ type CategoryPageProps = {
   params: Promise<{
     categorySlug: string;
   }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default async function CategoryPage({ params }: CategoryPageProps) {
+export default async function CategoryPage({
+  params,
+  searchParams,
+}: CategoryPageProps) {
   const { categorySlug } = await params;
+  const filters = normalizeCatalogFilters(await searchParams);
   const [category, products] = await Promise.all([
     getActiveStorefrontCategoryBySlug(categorySlug),
-    listActiveStorefrontProducts({ categorySlug }),
+    listActiveStorefrontProducts({ ...filters, categorySlug }),
   ]);
 
   if (!category) {
     notFound();
   }
+
+  const basePath = `/category/${categorySlug}`;
 
   return (
     <>
@@ -70,9 +78,14 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
       <StorefrontSection>
         <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
-          <CatalogFilterSidebar />
+          <CatalogFilterSidebar basePath={basePath} filters={filters} />
           <div>
-            <CatalogToolbar count={products.length} title={category.label} />
+            <CatalogToolbar
+              basePath={basePath}
+              count={products.length}
+              filters={filters}
+              title={category.label}
+            />
             <StorefrontProductGrid
               products={products}
               emptyTitle="У цій категорії ще немає активних товарів"

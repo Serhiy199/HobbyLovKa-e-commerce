@@ -4,13 +4,13 @@ import {
   ClockIcon,
   HeartIcon,
   PhoneIcon,
-  SearchIcon,
   ShoppingBagIcon,
   UserIcon,
 } from "lucide-react";
 
 import { StorefrontLogo } from "@/components/storefront/storefront-logo";
 import { StorefrontMobileMenu } from "@/components/storefront/mobile-menu";
+import { StorefrontSearchForm } from "@/components/storefront/storefront-search-form";
 import {
   storefrontBrand,
   storefrontCategories,
@@ -19,7 +19,6 @@ import {
 } from "@/components/storefront/storefront-config";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 export function StorefrontHeader() {
@@ -67,17 +66,11 @@ export function StorefrontHeader() {
         </Link>
 
         <div className="hidden min-w-0 flex-1 lg:block">
-          <label className="relative block">
-            <SearchIcon className="text-muted-foreground pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2" />
-            <Input
-              className="h-11 rounded-lg border-border/80 bg-card pl-11 pr-28 shadow-sm"
-              placeholder="Почніть вводити назву товару"
-              type="search"
-            />
-            <span className="text-muted-foreground absolute right-4 top-1/2 -translate-y-1/2 text-xs">
-              Часто шукають: pod
-            </span>
-          </label>
+          <StorefrontSearchForm
+            inputClassName="border-border/80 pr-48"
+            placeholder="Почніть вводити назву товару"
+            showHint
+          />
         </div>
 
         <div className="ml-auto flex items-center gap-2">

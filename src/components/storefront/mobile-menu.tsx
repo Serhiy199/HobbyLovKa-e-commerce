@@ -1,16 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { MenuIcon, SearchIcon, ShoppingBagIcon, UserIcon } from "lucide-react";
+import { MenuIcon, ShoppingBagIcon, UserIcon } from "lucide-react";
 
 import { StorefrontLogo } from "@/components/storefront/storefront-logo";
+import { StorefrontSearchForm } from "@/components/storefront/storefront-search-form";
 import {
   storefrontCategories,
   storefrontInfoLinks,
   storefrontMainNavigation,
 } from "@/components/storefront/storefront-config";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
@@ -47,14 +47,11 @@ export function StorefrontMobileMenu() {
         </SheetHeader>
 
         <div className="space-y-5 px-5 py-5">
-          <label className="relative block">
-            <SearchIcon className="text-muted-foreground pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2" />
-            <Input
-              className="h-11 rounded-lg bg-background pl-10"
-              placeholder="Пошук товару"
-              type="search"
-            />
-          </label>
+          <StorefrontSearchForm
+            inputClassName="bg-background"
+            placeholder="Пошук товару"
+            submitLabel="OK"
+          />
 
           <div className="grid grid-cols-2 gap-2">
             <Link

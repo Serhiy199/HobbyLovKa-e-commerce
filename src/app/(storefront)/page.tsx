@@ -2,12 +2,12 @@ import Link from "next/link";
 import {
   ArrowRightIcon,
   BadgeCheckIcon,
-  SearchIcon,
   ShoppingBagIcon,
 } from "lucide-react";
 
 import { StorefrontCategoryCard } from "@/components/storefront/category-card";
 import { StorefrontProductGrid } from "@/components/storefront/product-grid";
+import { StorefrontSearchForm } from "@/components/storefront/storefront-search-form";
 import {
   storefrontHomePromos,
 } from "@/components/storefront/storefront-config";
@@ -20,7 +20,6 @@ import {
   StorefrontSectionHeader,
   storefrontPatterns,
 } from "@/components/storefront/storefront-primitives";
-import { Input } from "@/components/ui/input";
 import { getStorefrontHomePageData } from "@/server/queries/storefront-catalog.query";
 
 export const dynamic = "force-dynamic";
@@ -37,7 +36,7 @@ const popularSearches = [
 const merchandisingBlocks = [
   {
     description: "Добірки new, sale та hit будуть наповнюватися товарами з адмінки на наступному кроці.",
-    href: "/catalog?flag=hit",
+    href: "/catalog?badge=hit",
     label: "Популярні товари",
   },
   {
@@ -77,14 +76,10 @@ export default async function StorefrontHomePage() {
             </div>
 
             <div className="max-w-2xl rounded-xl border border-border/70 bg-card p-2 shadow-sm">
-              <label className="relative block">
-                <SearchIcon className="text-muted-foreground pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2" />
-                <Input
-                  className="h-12 rounded-lg border-0 bg-background pl-11 pr-4 shadow-none"
-                  placeholder="Почніть вводити назву товару"
-                  type="search"
-                />
-              </label>
+              <StorefrontSearchForm
+                inputClassName="h-12 border-0 bg-background shadow-none"
+                placeholder="Почніть вводити назву товару"
+              />
             </div>
 
             <div className="flex flex-wrap gap-2">
