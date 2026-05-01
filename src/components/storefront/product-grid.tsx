@@ -1,9 +1,12 @@
 import type { StorefrontProductCardItem } from "@/components/storefront/product-types";
 import { StorefrontProductCard } from "@/components/storefront/product-card";
-import { StorefrontEmptyState, StorefrontGrid } from "@/components/storefront/storefront-primitives";
+import {
+  StorefrontEmptyState,
+  StorefrontGrid,
+} from "@/components/storefront/storefront-primitives";
 
 export function StorefrontProductGrid({
-  emptyDescription = "Після підключення товарних запитів тут з'являться активні товари з адмінки.",
+  emptyDescription = "Після підключення товарних запитів тут з’являться активні товари з адмінки.",
   emptyTitle = "Товари ще не додані",
   products,
 }: {
