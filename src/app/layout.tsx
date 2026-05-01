@@ -17,6 +17,14 @@ export const metadata: Metadata = {
   title: "Voodoo Vape",
   description:
     "Технічний фундамент Voodoo Vape для storefront і адмін-панелі.",
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+    },
+  },
 };
 
 export default function RootLayout({
