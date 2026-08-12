@@ -1,7 +1,5 @@
 import { createHash } from "node:crypto";
 
-const DEFAULT_UPLOAD_FOLDER = "vape-shop/products";
-
 type CloudinaryConfig = {
   apiKey: string;
   apiSecret: string;
@@ -41,22 +39,30 @@ type CertificateFileUploadInput = {
   title: string;
 };
 
-function getCloudinaryConfig(): CloudinaryConfig {
-  const cloudName = process.env.CLOUDINARY_CLOUD_NAME?.trim();
-  const apiKey = process.env.CLOUDINARY_API_KEY?.trim();
-  const apiSecret = process.env.CLOUDINARY_API_SECRET?.trim();
-  const uploadRoot =
-    process.env.CLOUDINARY_UPLOAD_FOLDER?.trim() || DEFAULT_UPLOAD_FOLDER;
+type CloudinaryEnvName =
+  | "CLOUDINARY_API_KEY"
+  | "CLOUDINARY_API_SECRET"
+  | "CLOUDINARY_CLOUD_NAME"
+  | "CLOUDINARY_UPLOAD_FOLDER";
 
-  if (!cloudName || !apiKey || !apiSecret) {
-    throw new Error("CLOUDINARY_CONFIG_MISSING");
+function getRequiredCloudinaryEnv(name: CloudinaryEnvName) {
+  const value = process.env[name]?.trim();
+
+  if (!value) {
+    throw new Error(
+      `Missing required Cloudinary environment variable: ${name}`,
+    );
   }
 
+  return value;
+}
+
+function getCloudinaryConfig(): CloudinaryConfig {
   return {
-    apiKey,
-    apiSecret,
-    cloudName,
-    uploadRoot,
+    apiKey: getRequiredCloudinaryEnv("CLOUDINARY_API_KEY"),
+    apiSecret: getRequiredCloudinaryEnv("CLOUDINARY_API_SECRET"),
+    cloudName: getRequiredCloudinaryEnv("CLOUDINARY_CLOUD_NAME"),
+    uploadRoot: getRequiredCloudinaryEnv("CLOUDINARY_UPLOAD_FOLDER"),
   };
 }
 
@@ -503,7 +509,9 @@ export async function uploadCertificateFileToCloudinary({
     getCloudinarySiteRoot(config.uploadRoot),
     "certificates",
   );
-  const safeName = normalizePathSegment(title || file.name.replace(/\.[^.]+$/, ""));
+  const safeName = normalizePathSegment(
+    title || file.name.replace(/\.[^.]+$/, ""),
+  );
   const publicId = `${safeName || "certificate"}-${timestamp}`;
   const resourceType = file.type === "application/pdf" ? "raw" : "image";
 
