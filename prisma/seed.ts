@@ -1,12 +1,31 @@
 import bcrypt from "bcryptjs";
 import { PrismaClient, SubcategoryFieldType, UserRole } from "@prisma/client";
 
-const prisma = new PrismaClient();
+type SeedAdminEnvName =
+  | "SEED_ADMIN_EMAIL"
+  | "SEED_ADMIN_PASSWORD"
+  | "SEED_ADMIN_FIRST_NAME"
+  | "SEED_ADMIN_LAST_NAME";
 
-const ADMIN_EMAIL = process.env.SEED_ADMIN_EMAIL ?? "admin@voodoovape.local";
-const ADMIN_PASSWORD = process.env.SEED_ADMIN_PASSWORD ?? "Admin12345!";
-const ADMIN_FIRST_NAME = process.env.SEED_ADMIN_FIRST_NAME ?? "Voodoo";
-const ADMIN_LAST_NAME = process.env.SEED_ADMIN_LAST_NAME ?? "Admin";
+function getRequiredSeedEnv(
+  name: SeedAdminEnvName,
+  preserveWhitespace = false,
+) {
+  const value = process.env[name];
+
+  if (typeof value !== "string" || value.trim().length === 0) {
+    throw new Error(`Missing required seed environment variable: ${name}`);
+  }
+
+  return preserveWhitespace ? value : value.trim();
+}
+
+const ADMIN_EMAIL = getRequiredSeedEnv("SEED_ADMIN_EMAIL");
+const ADMIN_PASSWORD = getRequiredSeedEnv("SEED_ADMIN_PASSWORD", true);
+const ADMIN_FIRST_NAME = getRequiredSeedEnv("SEED_ADMIN_FIRST_NAME");
+const ADMIN_LAST_NAME = getRequiredSeedEnv("SEED_ADMIN_LAST_NAME");
+
+const prisma = new PrismaClient();
 
 type SeedSubcategory = {
   description?: string;
