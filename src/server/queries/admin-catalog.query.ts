@@ -26,7 +26,10 @@ function resolveSelectedId<TItem extends { id: string }>(
 
 export async function getAdminCategoriesPageData(selectedId?: string) {
   const categories = await listAdminCategories();
-  const resolvedSelectedId = resolveSelectedId(categories, selectedId);
+  const resolvedSelectedId =
+    selectedId && categories.some((category) => category.id === selectedId)
+      ? selectedId
+      : undefined;
   const selectedCategory = resolvedSelectedId
     ? await getAdminCategoryById(resolvedSelectedId)
     : null;

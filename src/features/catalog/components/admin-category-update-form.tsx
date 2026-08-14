@@ -1,7 +1,8 @@
 "use client";
 
 import type { FormEvent } from "react";
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import {
@@ -16,8 +17,7 @@ import {
   AdminOptionalRichTextField,
   AdminOptionalTextareaField,
 } from "@/components/admin/admin-optional-fields";
-import { AdminEmptyState } from "@/components/admin/admin-primitives";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import {
   createCategoryAction,
@@ -51,7 +51,7 @@ type SelectedCategory = {
 };
 
 type AdminCategoryUpdateFormProps = {
-  category: SelectedCategory | null;
+  category?: SelectedCategory;
 };
 
 const createInitialValues: CategoryFormValues = {
@@ -235,17 +235,6 @@ export function AdminCategoryUpdateForm({
   const [, setEditMessage] = useState<string | null>(null);
   const [, setEditSuccess] = useState<string | null>(null);
 
-  useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      setEditValues(category ? buildEditValues(category) : null);
-      setEditErrors({});
-      setEditMessage(null);
-      setEditSuccess(null);
-    }, 0);
-
-    return () => window.clearTimeout(timeoutId);
-  }, [category]);
-
   const updateCreateField = (
     field: keyof Omit<CategoryFormValues, "image" | "isActive">,
     value: string,
@@ -361,8 +350,8 @@ export function AdminCategoryUpdateForm({
     });
   };
 
-  return (
-    <div className="space-y-6">
+  if (!category) {
+    return (
       <form className="space-y-4" onSubmit={handleCreate}>
         <CategoryFormFields
           heading="Нова категорія"
@@ -398,57 +387,62 @@ export function AdminCategoryUpdateForm({
           </Button>
         </div>
       </form>
+    );
+  }
 
-      {category && editValues ? (
-        <form className="space-y-4" onSubmit={handleUpdate}>
-          <CategoryFormFields
-            heading="Редагування категорії"
-            values={editValues}
-            errors={editErrors}
-            onActiveChange={(isActive) => {
-              setEditValues((current) =>
-                current
-                  ? {
-                      ...current,
-                      isActive,
-                    }
-                  : current,
-              );
-              setEditErrors((current) => ({
-                ...current,
-                isActive: undefined,
-              }));
-            }}
-            onImageChange={(image) => {
-              setEditValues((current) =>
-                current
-                  ? {
-                      ...current,
-                      image,
-                    }
-                  : current,
-              );
-              setEditErrors((current) => ({
-                ...current,
-                image: undefined,
-              }));
-            }}
-            onImageUploadingChange={setIsEditImageUploading}
-            onInputChange={updateEditField}
-          />
+  if (!editValues) {
+    return null;
+  }
 
-          <div className="flex justify-end">
-            <Button type="submit" disabled={isPending || isEditImageUploading}>
-              {activeAction === "update" ? "Зберігаємо..." : "Зберегти зміни"}
-            </Button>
-          </div>
-        </form>
-      ) : (
-        <AdminEmptyState
-          title="Оберіть категорію для редагування"
-          description="Форма створення доступна вище. Після вибору категорії зі списку тут з'явиться редагування."
-        />
-      )}
-    </div>
+  return (
+    <form className="space-y-4" onSubmit={handleUpdate}>
+      <CategoryFormFields
+        heading="Дані категорії"
+        values={editValues}
+        errors={editErrors}
+        onActiveChange={(isActive) => {
+          setEditValues((current) =>
+            current
+              ? {
+                  ...current,
+                  isActive,
+                }
+              : current,
+          );
+          setEditErrors((current) => ({
+            ...current,
+            isActive: undefined,
+          }));
+        }}
+        onImageChange={(image) => {
+          setEditValues((current) =>
+            current
+              ? {
+                  ...current,
+                  image,
+                }
+              : current,
+          );
+          setEditErrors((current) => ({
+            ...current,
+            image: undefined,
+          }));
+        }}
+        onImageUploadingChange={setIsEditImageUploading}
+        onInputChange={updateEditField}
+      />
+
+      <div className="flex justify-end gap-2">
+        <Link
+          href="/admin/categories"
+          className={buttonVariants({ variant: "outline" })}
+        >
+          Скасувати
+        </Link>
+        <Button type="submit" disabled={isPending || isEditImageUploading}>
+          {activeAction === "update" ? "Зберігаємо..." : "Зберегти"}
+        </Button>
+      </div>
+    </form>
   );
 }
