@@ -67,6 +67,10 @@ import {
 } from "@/server/repositories/catalog.repository";
 
 import { z } from "zod";
+import {
+  buildDefaultSeoDescription,
+  buildDefaultSeoTitle,
+} from "@/lib/site-config";
 import { slugifyText } from "@/lib/text/slug";
 
 type MutationSuccess<TData> = {
@@ -236,23 +240,13 @@ const deactivateSchema = z.object({
   id: z.string().trim().min(1).max(191),
 });
 
-const SEO_STORE_NAME = "VapeShop";
-
-function buildSeoTitle(name: string) {
-  return `${name}: купити в інтернет-магазині ${SEO_STORE_NAME}`;
-}
-
-function buildSeoDescription(name: string) {
-  return `${name}: замовити за вигідною ціною в Україні у ${SEO_STORE_NAME}. Швидке оформлення, зручна доставка по Україні та актуальний асортимент.`;
-}
-
 function withDefaultSeo<TPayload extends { name: string; seoDescription?: string; seoTitle?: string }>(
   payload: TPayload,
 ) {
   return {
     ...payload,
-    seoDescription: payload.seoDescription ?? buildSeoDescription(payload.name),
-    seoTitle: payload.seoTitle ?? buildSeoTitle(payload.name),
+    seoDescription: payload.seoDescription ?? buildDefaultSeoDescription(payload.name),
+    seoTitle: payload.seoTitle ?? buildDefaultSeoTitle(payload.name),
   };
 }
 
@@ -1270,12 +1264,12 @@ function normalizeProductOptionsPayload(
         titleOverride: optionIndex === 0 ? optionTitle : undefined,
         seoTitle:
           optionIndex === 0
-            ? value.seoTitle?.trim() || buildSeoTitle(optionPageTitle)
+            ? value.seoTitle?.trim() || buildDefaultSeoTitle(optionPageTitle)
             : undefined,
         seoDescription:
           optionIndex === 0
             ? value.seoDescription?.trim() ||
-              buildSeoDescription(optionPageTitle)
+              buildDefaultSeoDescription(optionPageTitle)
             : undefined,
       };
     }),
@@ -1392,9 +1386,9 @@ async function normalizeProductWritePayload(
     return normalizedFieldValues;
   }
 
-  const productSeoTitle = payload.seoTitle ?? buildSeoTitle(payload.title);
+  const productSeoTitle = payload.seoTitle ?? buildDefaultSeoTitle(payload.title);
   const productSeoDescription =
-    payload.seoDescription ?? buildSeoDescription(payload.title);
+    payload.seoDescription ?? buildDefaultSeoDescription(payload.title);
 
   const normalizedOptions = normalizeProductOptionsPayload(payload);
   const optionSlugError = await validateProductOptionSlugUniqueness(

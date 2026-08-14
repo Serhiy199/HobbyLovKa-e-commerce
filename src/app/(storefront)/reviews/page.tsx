@@ -5,13 +5,14 @@ import { ReviewType } from "@prisma/client";
 import { CmsPageShell } from "@/components/storefront/cms-content";
 import { StorefrontCard } from "@/components/storefront/storefront-primitives";
 import { ReviewSubmitForm } from "@/features/content/components/public-content-forms";
+import { SITE_NAME } from "@/lib/site-config";
 import {
   isSystemPageActive,
   listPublicReviews,
 } from "@/server/repositories/content.repository";
 
 export const metadata: Metadata = {
-  description: "Відгуки клієнтів про магазин і товари Voodoo Vape.",
+  description: `Відгуки клієнтів про магазин і товари ${SITE_NAME}.`,
   title: "Відгуки",
 };
 

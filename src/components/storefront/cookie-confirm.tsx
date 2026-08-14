@@ -6,9 +6,9 @@ import { CookieIcon, XIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-const COOKIE_CONFIRM_STORAGE_KEY = "voodoo-vape-cookie-confirmed";
-const COOKIE_CONFIRM_SESSION_KEY = "voodoo-vape-cookie-session";
-const COOKIE_CONFIRM_COOKIE_KEY = "voodoo_vape_cookie_confirmed";
+const COOKIE_CONFIRM_STORAGE_KEY = "hobbylovka-cookie-confirmed";
+const COOKIE_CONFIRM_SESSION_KEY = "hobbylovka-cookie-session";
+const COOKIE_CONFIRM_COOKIE_KEY = "hobbylovka_cookie_confirmed";
 const ONE_YEAR_IN_SECONDS = 60 * 60 * 24 * 365;
 
 function getCookie(name: string) {

@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 
-const CART_STORAGE_KEY = "voodoo-vape-cart";
+const CART_STORAGE_KEY = "hobbylovka-cart";
 const MIN_QUANTITY = 1;
 const MAX_QUANTITY = 99;
 

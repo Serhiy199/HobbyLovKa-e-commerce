@@ -5,6 +5,7 @@ import type {
 } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma/client";
+import { SITE_NAME, SITE_SUPPORT_EMAIL } from "@/lib/site-config";
 import type {
   BlogPostMutationInput,
   CertificateItemMutationInput,
@@ -43,7 +44,7 @@ const fallbackContactSettings = {
   additionalContentJson: null,
   address: "Доставка по Україні",
   createdAt: new Date(0),
-  email: "support@voodoovape.local",
+  email: SITE_SUPPORT_EMAIL,
   facebookUrl: null,
   formEnabled: true,
   formRecipientEmail: null,
@@ -53,8 +54,8 @@ const fallbackContactSettings = {
   mapEmbedUrl: null,
   mapIframeHtml: null,
   phone: "+38 (080) 033-50-94",
-  seoDescription: "Контакти магазину Voodoo Vape.",
-  seoTitle: "Контакти | Voodoo Vape",
+  seoDescription: `Контакти магазину ${SITE_NAME}.`,
+  seoTitle: `Контакти | ${SITE_NAME}`,
   subtitle:
     "Наш графік роботи: Пн-Нд: 10:00-20:00. Телефонуйте! Будемо раді допомогти.",
   telegramUrl: null,

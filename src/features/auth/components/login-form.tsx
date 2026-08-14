@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { loginAction } from "@/features/auth/actions/login";
+import { SITE_NAME } from "@/lib/site-config";
 
 const initialLoginFormState = {
   error: null,
@@ -43,7 +44,7 @@ export function LoginForm({ redirectTo = "/" }: { redirectTo?: string }) {
         </div>
         <div className="space-y-3">
           <p className="text-muted-foreground text-sm uppercase tracking-[0.24em]">
-            Voodoo Vape
+            {SITE_NAME}
           </p>
           <CardTitle className="text-3xl font-semibold tracking-tight sm:text-4xl">
             Вхід до акаунта

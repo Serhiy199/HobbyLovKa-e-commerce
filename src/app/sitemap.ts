@@ -1,22 +1,12 @@
 import type { MetadataRoute } from "next";
 
 import { prisma } from "@/lib/prisma/client";
+import { absoluteSiteUrl } from "@/lib/site-url";
 import {
   listActiveSystemPageLinks,
   listActiveContentPageSitemapEntries,
   listPublishedBlogPostSitemapEntries,
 } from "@/server/repositories/content.repository";
-
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  process.env.VERCEL_PROJECT_PRODUCTION_URL ??
-  "https://vape-shop-lilac.vercel.app";
-
-function absoluteUrl(path: string) {
-  const baseUrl = SITE_URL.startsWith("http") ? SITE_URL : `https://${SITE_URL}`;
-
-  return new URL(path, baseUrl).toString();
-}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [products, brands, contentPages, systemPages, blogPosts] = await Promise.all([
@@ -73,7 +63,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const productEntries = products.flatMap((product) => [
     {
       lastModified: product.updatedAt,
-      url: absoluteUrl(`/product/${product.slug}`),
+      url: absoluteSiteUrl(`/product/${product.slug}`),
     },
     ...product.options.flatMap((option) =>
       option.values.flatMap((value) =>
@@ -81,7 +71,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           ? [
               {
                 lastModified: product.updatedAt,
-                url: absoluteUrl(`/product/${value.slug}`),
+                url: absoluteSiteUrl(`/product/${value.slug}`),
               },
             ]
           : [],
@@ -91,24 +81,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const contentEntries = contentPages.map((page) => ({
     lastModified: page.updatedAt,
-    url: absoluteUrl(`/${page.slug}`),
+    url: absoluteSiteUrl(`/${page.slug}`),
   }));
 
   const isBlogActive = systemPages.some((page) => page.href === "/blog");
   const blogEntries = isBlogActive
     ? blogPosts.map((post) => ({
         lastModified: post.updatedAt,
-        url: absoluteUrl(`/blog/${post.slug}`),
+        url: absoluteSiteUrl(`/blog/${post.slug}`),
       }))
     : [];
 
   const brandEntries = brands.map((brand) => ({
     lastModified: brand.updatedAt,
-    url: absoluteUrl(`/brand/${brand.slug}`),
+    url: absoluteSiteUrl(`/brand/${brand.slug}`),
   }));
 
   const systemEntries = systemPages.map((page) => ({
-    url: absoluteUrl(page.href),
+    url: absoluteSiteUrl(page.href),
   }));
 
   return [

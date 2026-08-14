@@ -1,5 +1,5 @@
 {
-  "name": "vape-shop",
+  "name": "hobbylovka-e-commerce",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,6 +7,7 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "test:slug": "node --no-warnings --experimental-strip-types --test src/lib/text/slug.test.mjs",
+    "test:site-config": "node --no-warnings --experimental-strip-types --test src/lib/site-config.test.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",

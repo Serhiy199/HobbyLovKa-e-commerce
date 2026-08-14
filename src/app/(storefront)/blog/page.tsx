@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { CmsPageShell } from "@/components/storefront/cms-content";
 import { StorefrontCard } from "@/components/storefront/storefront-primitives";
+import { SITE_NAME } from "@/lib/site-config";
 import {
   listBlogCategories,
   listBlogTags,
@@ -12,7 +13,7 @@ import {
 } from "@/server/repositories/content.repository";
 
 export const metadata: Metadata = {
-  description: "Статті, поради та новини Voodoo Vape.",
+  description: `Статті, поради та новини ${SITE_NAME}.`,
   title: "Блог",
 };
 
@@ -88,7 +89,7 @@ export default async function BlogPage() {
                     </p>
                   ) : null}
                   <p className="text-muted-foreground text-xs">
-                    {post.authorName ?? "Voodoo Vape"} · {post.viewsCount} переглядів
+                    {post.authorName ?? SITE_NAME} · {post.viewsCount} переглядів
                     {post.readingTime ? ` · ${post.readingTime} хв` : ""}
                   </p>
                 </div>

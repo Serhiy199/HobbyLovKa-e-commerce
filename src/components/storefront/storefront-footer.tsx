@@ -8,6 +8,7 @@ import {
   storefrontTrustItems,
 } from "@/components/storefront/storefront-config";
 import { Separator } from "@/components/ui/separator";
+import { SITE_NAME, SITE_SUPPORT_EMAIL } from "@/lib/site-config";
 import {
   listActiveSystemPageLinks,
   listFooterContentPages,
@@ -66,7 +67,7 @@ export async function StorefrontFooter() {
               </span>
               <span className="inline-flex items-center gap-2">
                 <MailIcon className="text-primary size-4" />
-                support@voodoovape.local
+                {SITE_SUPPORT_EMAIL}
               </span>
               <span className="inline-flex items-center gap-2">
                 <MapPinIcon className="text-primary size-4" />
@@ -112,7 +113,7 @@ export async function StorefrontFooter() {
 
       <div className="border-t border-[#2b211a] bg-[#17130f]">
         <div className="mx-auto flex w-full max-w-screen-2xl flex-col gap-2 px-4 py-4 text-xs text-[#c9beb1] sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
-          <p>© 2026 Voodoo Vape.</p>
+          <p>© 2026 {SITE_NAME}.</p>
           <div className="flex gap-4">
             <Link href="/privacy">Політика конфіденційності</Link>
             <Link href="/terms">Умови використання</Link>

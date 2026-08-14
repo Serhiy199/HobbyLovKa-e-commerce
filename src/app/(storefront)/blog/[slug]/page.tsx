@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { CmsPageShell } from "@/components/storefront/cms-content";
 import { SafeRichTextContent } from "@/components/storefront/safe-rich-text-content";
 import { StorefrontCard } from "@/components/storefront/storefront-primitives";
+import { SITE_NAME } from "@/lib/site-config";
 import {
   getPublishedBlogPost,
   incrementBlogPostViews,
@@ -72,7 +73,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         ) : null}
         <div className="space-y-5 p-5 sm:p-7">
           <p className="text-muted-foreground text-sm">
-            {post.authorName ?? "Voodoo Vape"}
+            {post.authorName ?? SITE_NAME}
             {post.publishedAt
               ? ` · ${post.publishedAt.toLocaleDateString("uk-UA")}`
               : ""}

@@ -58,10 +58,10 @@ type FieldSeed = {
 
 const promoBanners = [
   {
-    title: "Telegram",
+    title: "Підтримка",
     imageUrl:
       "https://placehold.co/520x920/0ea5e9/ffffff.png?text=Telegram",
-    targetUrl: "https://t.me/voodoovape",
+    targetUrl: "/contacts",
     sortOrder: 1,
   },
   {
@@ -133,7 +133,7 @@ const contentPages = [
   {
     title: "Про нас",
     slug: "about",
-    excerpt: "Інформація про магазин Voodoo Vape.",
+    excerpt: "Інформація про магазин HobbyLovKa.",
     contentHtml:
       "<p>Розкажіть клієнтам про магазин, команду та підхід до сервісу.</p>",
     sortOrder: 3,
@@ -645,12 +645,12 @@ async function seedContactPageSettings() {
       "Наш графік роботи: Пн-Нд: 10:00-20:00. Телефонуйте! Будемо раді допомогти.",
     workSchedule: "Пн-Нд: 10:00-20:00",
     phone: "+380000000000",
-    email: "support@voodoovape.local",
+    email: "support@hobbylovka.local",
     address: "Україна",
     formTitle: "Напишіть нам",
     formEnabled: true,
-    seoTitle: "Контакти | Voodoo Vape",
-    seoDescription: "Контакти магазину Voodoo Vape.",
+    seoTitle: "Контакти | HobbyLovKa",
+    seoDescription: "Контакти магазину HobbyLovKa.",
   };
 
   if (existingSettings) {

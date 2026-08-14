@@ -44,6 +44,10 @@ import {
   deleteProductAction,
   updateProductAction,
 } from "@/features/catalog/actions/admin-catalog";
+import {
+  buildDefaultSeoDescription,
+  buildDefaultSeoTitle,
+} from "@/lib/site-config";
 import { slugifyText } from "@/lib/text/slug";
 
 type CategoryOption = {
@@ -824,14 +828,6 @@ function resolveProductSlug(values: ProductFormValues) {
   return values.slug.trim() || slugifyText(values.title);
 }
 
-function buildSeoTitle(name: string) {
-  return `${name}: купити в інтернет-магазині VapeShop`;
-}
-
-function buildSeoDescription(name: string) {
-  return `${name}: замовити за вигідною ціною в Україні у VapeShop. Швидке оформлення, зручна доставка по Україні та актуальний асортимент.`;
-}
-
 function resolveOptionValuePageTitle(
   values: ProductFormValues,
   optionValue: ProductOptionValueDraft,
@@ -843,11 +839,11 @@ function resolveOptionValuePageTitle(
 }
 
 function resolveSeoTitle(values: ProductFormValues) {
-  return values.seoTitle.trim() || buildSeoTitle(values.title.trim());
+  return values.seoTitle.trim() || buildDefaultSeoTitle(values.title.trim());
 }
 
 function resolveSeoDescription(values: ProductFormValues) {
-  return values.seoDescription.trim() || buildSeoDescription(values.title.trim());
+  return values.seoDescription.trim() || buildDefaultSeoDescription(values.title.trim());
 }
 function validateDynamicFields(
   fieldDefinitions: FieldDefinition[],
@@ -2574,7 +2570,7 @@ function ProductWizard({
                         seoTitle: event.target.value,
                       })
                     }
-                    hint={`Якщо залишити порожнім: ${buildSeoTitle(resolveOptionValuePageTitle(values, optionValue))}`}
+                    hint={`Якщо залишити порожнім: ${buildDefaultSeoTitle(resolveOptionValuePageTitle(values, optionValue))}`}
                   />
 
                   <AdminInputField
@@ -2586,7 +2582,7 @@ function ProductWizard({
                         seoDescription: event.target.value,
                       })
                     }
-                    hint={`Якщо залишити порожнім: ${buildSeoDescription(resolveOptionValuePageTitle(values, optionValue))}`}
+                    hint={`Якщо залишити порожнім: ${buildDefaultSeoDescription(resolveOptionValuePageTitle(values, optionValue))}`}
                   />
 
                   <AdminInputField

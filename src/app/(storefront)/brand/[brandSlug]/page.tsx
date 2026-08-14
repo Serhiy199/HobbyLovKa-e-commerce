@@ -11,6 +11,7 @@ import {
   StorefrontSection,
 } from "@/components/storefront/storefront-primitives";
 import { normalizeCatalogFilters } from "@/lib/storefront/catalog-filters";
+import { SITE_NAME } from "@/lib/site-config";
 import {
   getActiveStorefrontBrandBySlug,
   getStorefrontCatalogFilterOptions,
@@ -37,7 +38,7 @@ function resolveBrandPageTitle(brand: StorefrontBrandPageData) {
 function resolveBrandPageDescription(brand: StorefrontBrandPageData) {
   return (
     brand.seoDescription ||
-    `Купити ${brand.name} в інтернет-магазині Voodoo Vape Shop. Великий вибір, швидке оформлення та доставка по Україні.`
+    `Купити ${brand.name} в інтернет-магазині ${SITE_NAME}. Великий вибір, швидке оформлення та доставка по Україні.`
   );
 }
 

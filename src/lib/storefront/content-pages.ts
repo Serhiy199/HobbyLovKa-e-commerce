@@ -12,6 +12,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { SITE_NAME, SITE_SUPPORT_EMAIL } from "@/lib/site-config";
+
 export type StorefrontContentPage = {
   cards: Array<{
     description: string;
@@ -121,7 +123,7 @@ export const storefrontContentPages = {
         title: "Телефон",
       },
       {
-        description: "support@voodoovape.local",
+        description: SITE_SUPPORT_EMAIL,
         icon: HeadphonesIcon,
         title: "Підтримка",
       },
@@ -255,7 +257,7 @@ export const storefrontContentPages = {
       },
     ],
     description:
-      "Voodoo Vape створюється як зручний магазин, де каталог, фільтри й контент працюють разом.",
+      `${SITE_NAME} створюється як зручний магазин, де каталог, фільтри й контент працюють разом.`,
     eyebrow: "Про магазин",
     sections: [
       {

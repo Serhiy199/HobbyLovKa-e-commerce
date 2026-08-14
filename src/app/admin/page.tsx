@@ -133,18 +133,18 @@ export default function AdminHomePage() {
                 <AdminInputField
                   id="product-name"
                   label="Назва товару"
-                  placeholder="Наприклад, Voodoo Salt Mango"
+                  placeholder="Наприклад, Набір для вишивання Квіти"
                   hint="Коротка зрозуміла назва для списків і detail screen."
-                  defaultValue="Voodoo Salt Mango"
+                  defaultValue="Набір для вишивання Квіти"
                   required
                 />
                 <AdminSelectField
                   label="Бренд"
                   placeholder="Оберіть бренд"
-                  value="voodoo"
+                  value="hobbylovka"
                   hint="Селект використовуватиметься для зв'язків між сутностями."
                   options={[
-                    { value: "voodoo", label: "Voodoo" },
+                    { value: "hobbylovka", label: "HobbyLovKa" },
                     { value: "chaser", label: "Chaser" },
                     { value: "twisted", label: "Twisted" },
                   ]}

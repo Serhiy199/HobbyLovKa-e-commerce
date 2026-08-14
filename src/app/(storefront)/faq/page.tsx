@@ -4,13 +4,14 @@ import { notFound } from "next/navigation";
 import { CmsPageShell } from "@/components/storefront/cms-content";
 import { SafeRichTextContent } from "@/components/storefront/safe-rich-text-content";
 import { StorefrontCard } from "@/components/storefront/storefront-primitives";
+import { SITE_NAME } from "@/lib/site-config";
 import {
   isSystemPageActive,
   listActiveFAQSections,
 } from "@/server/repositories/content.repository";
 
 export const metadata: Metadata = {
-  description: "FAQ - питання та відповіді магазину Voodoo Vape.",
+  description: `FAQ - питання та відповіді магазину ${SITE_NAME}.`,
   title: "FAQ - Питання та відповіді",
 };
 

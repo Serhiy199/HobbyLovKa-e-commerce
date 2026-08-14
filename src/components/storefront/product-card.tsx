@@ -14,6 +14,7 @@ import {
   storefrontPatterns,
 } from "@/components/storefront/storefront-primitives";
 import { cn } from "@/lib/utils";
+import { SITE_NAME } from "@/lib/site-config";
 
 const badgeLabels: Record<StorefrontProductBadge, string> = {
   hit: "Топ",
@@ -106,7 +107,7 @@ export function StorefrontProductCard({
           <div className="space-y-2">
             <div className="flex min-w-0 items-center justify-between gap-2">
               <span className="text-muted-foreground truncate text-xs font-medium tracking-[0.12em] uppercase">
-                {product.brand ?? "Voodoo"}
+                {product.brand ?? SITE_NAME}
               </span>
               <span
                 className={cn(

@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { RegisterInput } from "@/features/auth/schemas";
 import { registerSchema } from "@/features/auth/schemas";
+import { SITE_NAME } from "@/lib/site-config";
 
 type RegisterFormValues = {
   email: string;
@@ -132,7 +133,7 @@ export function RegisterForm() {
         </div>
         <div className="space-y-3">
           <p className="text-muted-foreground text-sm uppercase tracking-[0.24em]">
-            Voodoo Vape
+            {SITE_NAME}
           </p>
           <CardTitle className="text-3xl font-semibold tracking-tight sm:text-4xl">
             Створення клієнтського акаунта

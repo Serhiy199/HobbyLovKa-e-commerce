@@ -31,6 +31,10 @@ import {
   createSubcategoryAction,
   updateSubcategoryAction,
 } from "@/features/catalog/actions/admin-catalog";
+import {
+  buildDefaultSeoDescription,
+  buildDefaultSeoTitle,
+} from "@/lib/site-config";
 
 type CategoryOption = {
   id: string;
@@ -217,7 +221,7 @@ function SubcategoryFormFields({
           value={values.seoTitle}
           onChange={(event) => onInputChange("seoTitle", event.target.value)}
           error={errors.seoTitle}
-          hint={`Якщо залишити порожнім: ${values.name}: купити в інтернет-магазині VapeShop`}
+          hint={`Якщо залишити порожнім: ${buildDefaultSeoTitle(values.name)}`}
         />
       </AdminFormGrid>
 
@@ -241,7 +245,7 @@ function SubcategoryFormFields({
           }
           error={errors.seoDescription}
           rows={3}
-          hint={`Якщо залишити порожнім: ${values.name}: замовити за вигідною ціною в Україні у VapeShop. Швидке оформлення, зручна доставка по Україні та актуальний асортимент.`}
+          hint={`Якщо залишити порожнім: ${buildDefaultSeoDescription(values.name)}`}
         />
 
         {categoryChangeBlocked ? (

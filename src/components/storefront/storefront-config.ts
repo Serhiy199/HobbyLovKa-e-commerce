@@ -12,10 +12,12 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { SITE_LOGO_PATH, SITE_NAME, SITE_TAGLINE } from "@/lib/site-config";
+
 export const storefrontBrand = {
-  name: "Voodoo Vape",
-  tagline: "vape shop та аксесуари",
-  logoSrc: "/images/site-logo.png",
+  name: SITE_NAME,
+  tagline: SITE_TAGLINE,
+  logoSrc: SITE_LOGO_PATH,
 };
 
 export const storefrontMainNavigation = [

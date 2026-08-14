@@ -7,6 +7,10 @@ import type {
 import type { StorefrontCategory } from "@/components/storefront/storefront-config";
 import { storefrontCategories } from "@/components/storefront/storefront-config";
 import { prisma } from "@/lib/prisma/client";
+import {
+  buildDefaultSeoDescription,
+  buildDefaultSeoTitle,
+} from "@/lib/site-config";
 import { listActiveStorefrontBanners } from "@/server/repositories/banner.repository";
 import type {
   CatalogAvailabilityFilter,
@@ -1013,11 +1017,11 @@ export async function getActiveStorefrontProductBySlug(slug: string) {
   const metaTitle =
     selectedOptionValue?.seoTitle ??
     product.seoTitle ??
-    `${pageTitle}: купити в інтернет-магазині VapeShop`;
+    buildDefaultSeoTitle(pageTitle);
   const metaDescription =
     selectedOptionValue?.seoDescription ??
     product.seoDescription ??
-    `${pageTitle}: замовити за вигідною ціною в Україні у VapeShop. Швидке оформлення, зручна доставка по Україні та актуальний асортимент.`;
+    buildDefaultSeoDescription(pageTitle);
 
   return {
     ...product,
