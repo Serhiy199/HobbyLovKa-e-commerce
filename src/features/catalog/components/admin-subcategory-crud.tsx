@@ -2,6 +2,7 @@
 
 import type { FormEvent } from "react";
 import { useEffect, useMemo, useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import {
@@ -17,7 +18,7 @@ import {
   AdminOptionalTextareaField,
 } from "@/components/admin/admin-optional-fields";
 import { AdminEmptyState } from "@/components/admin/admin-primitives";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -34,7 +35,6 @@ import {
 type CategoryOption = {
   id: string;
   name: string;
-  slug: string;
 };
 
 type SubcategoryFormValues = {
@@ -44,7 +44,6 @@ type SubcategoryFormValues = {
   name: string;
   seoDescription: string;
   seoTitle: string;
-  slug: string;
   sortOrder: string;
 };
 
@@ -61,7 +60,6 @@ type SelectedSubcategory = {
   productsCount: number;
   seoDescription: string | null;
   seoTitle: string | null;
-  slug: string;
   sortOrder: number;
 };
 
@@ -77,7 +75,6 @@ const emptyValues: SubcategoryFormValues = {
   name: "",
   seoDescription: "",
   seoTitle: "",
-  slug: "",
   sortOrder: "0",
 };
 
@@ -100,7 +97,6 @@ function buildEditValues(
     name: subcategory.name,
     seoDescription: subcategory.seoDescription ?? "",
     seoTitle: subcategory.seoTitle ?? "",
-    slug: subcategory.slug,
     sortOrder: subcategory.sortOrder.toString(),
   };
 }
@@ -115,7 +111,6 @@ function mapFieldErrors(
     name: fieldErrors?.name?.[0],
     seoDescription: fieldErrors?.seoDescription?.[0],
     seoTitle: fieldErrors?.seoTitle?.[0],
-    slug: fieldErrors?.slug?.[0],
     sortOrder: fieldErrors?.sortOrder?.[0],
   };
 }
@@ -183,15 +178,24 @@ function SubcategoryFormFields({
           required
         />
 
-        <AdminInputField
-          id={`${heading}-slug`}
-          name="slug"
-          label="Slug"
-          value={values.slug}
-          onChange={(event) => onInputChange("slug", event.target.value)}
-          error={errors.slug}
-          hint="Можна залишити порожнім, тоді slug згенерується з назви."
-        />
+        <AdminField label="Статус" error={errors.isActive}>
+          <div className="border-border/70 bg-muted/30 flex items-start justify-between gap-4 rounded-lg border px-4 py-3">
+            <div className="space-y-1">
+              <p className="text-sm font-medium">
+                {values.isActive ? "Активна" : "Неактивна"}
+              </p>
+              <p className="text-muted-foreground text-sm leading-6">
+                Неактивна підкатегорія лишається в базі й зберігає зв&apos;язки
+                з товарами, але не має показуватися у публічному каталозі.
+              </p>
+            </div>
+            <Switch
+              checked={values.isActive}
+              onCheckedChange={onActiveChange}
+              aria-label="Активна підкатегорія"
+            />
+          </div>
+        </AdminField>
 
         <AdminInputField
           id={`${heading}-sort-order`}
@@ -239,25 +243,6 @@ function SubcategoryFormFields({
           rows={3}
           hint={`Якщо залишити порожнім: ${values.name}: замовити за вигідною ціною в Україні у VapeShop. Швидке оформлення, зручна доставка по Україні та актуальний асортимент.`}
         />
-
-        <AdminField label="Статус" error={errors.isActive}>
-          <div className="border-border/70 bg-muted/30 flex items-start justify-between gap-4 rounded-lg border px-4 py-3">
-            <div className="space-y-1">
-              <p className="text-sm font-medium">
-                {values.isActive ? "Активна" : "Неактивна"}
-              </p>
-              <p className="text-muted-foreground text-sm leading-6">
-                Неактивна підкатегорія лишається в базі й зберігає зв&apos;язки
-                з товарами, але не має показуватися у публічному каталозі.
-              </p>
-            </div>
-            <Switch
-              checked={values.isActive}
-              onCheckedChange={onActiveChange}
-              aria-label="Активна підкатегорія"
-            />
-          </div>
-        </AdminField>
 
         {categoryChangeBlocked ? (
           <div className="border-destructive/20 bg-destructive/8 text-destructive rounded-lg border px-4 py-3 text-sm leading-6">
@@ -387,7 +372,7 @@ export function AdminSubcategoryCrud({
           title: "Підкатегорію створено",
           message: result.data.name,
         });
-        router.push(`/admin/subcategories?selected=${result.data.id}`);
+        router.push("/admin/subcategories");
         router.refresh();
       } finally {
         setActiveAction(null);
@@ -447,8 +432,8 @@ export function AdminSubcategoryCrud({
     );
   }
 
-  return (
-    <div className="space-y-6">
+  if (!selectedSubcategory) {
+    return (
       <form className="space-y-4" onSubmit={handleCreate}>
         <SubcategoryFormFields
           heading="Нова підкатегорія"
@@ -484,60 +469,65 @@ export function AdminSubcategoryCrud({
           </Button>
         </div>
       </form>
+    );
+  }
 
-      {selectedSubcategory && editValues ? (
-        <form className="space-y-4" onSubmit={handleUpdate}>
-          <SubcategoryFormFields
-            heading="Редагування підкатегорії"
-            categories={categories}
-            values={editValues}
-            errors={editErrors}
-            categoryChangeBlocked={categoryChangeBlocked}
-            onCategoryChange={(categoryId) => {
-              setEditValues((current) =>
-                current
-                  ? {
-                      ...current,
-                      categoryId: categoryId ?? "",
-                    }
-                  : current,
-              );
-              setEditErrors((current) => ({
-                ...current,
-                categoryId: undefined,
-              }));
-              setEditMessage(null);
-              setEditSuccess(null);
-            }}
-            onActiveChange={(isActive) => {
-              setEditValues((current) =>
-                current
-                  ? {
-                      ...current,
-                      isActive,
-                    }
-                  : current,
-              );
-              setEditErrors((current) => ({
-                ...current,
-                isActive: undefined,
-              }));
-            }}
-            onInputChange={updateEditField}
-          />
+  if (!editValues) {
+    return null;
+  }
 
-          <div className="flex justify-end">
-            <Button type="submit" disabled={isPending || categoryChangeBlocked}>
-              {activeAction === "update" ? "Зберігаємо..." : "Зберегти зміни"}
-            </Button>
-          </div>
-        </form>
-      ) : (
-        <AdminEmptyState
-          title="Оберіть підкатегорію для редагування"
-          description="Форма створення доступна вище. Після вибору підкатегорії зі списку тут з'явиться редагування назви, фото, категорії та статусу."
-        />
-      )}
-    </div>
+  return (
+    <form className="space-y-4" onSubmit={handleUpdate}>
+      <SubcategoryFormFields
+        heading="Редагування підкатегорії"
+        categories={categories}
+        values={editValues}
+        errors={editErrors}
+        categoryChangeBlocked={categoryChangeBlocked}
+        onCategoryChange={(categoryId) => {
+          setEditValues((current) =>
+            current
+              ? {
+                  ...current,
+                  categoryId: categoryId ?? "",
+                }
+              : current,
+          );
+          setEditErrors((current) => ({
+            ...current,
+            categoryId: undefined,
+          }));
+          setEditMessage(null);
+          setEditSuccess(null);
+        }}
+        onActiveChange={(isActive) => {
+          setEditValues((current) =>
+            current
+              ? {
+                  ...current,
+                  isActive,
+                }
+              : current,
+          );
+          setEditErrors((current) => ({
+            ...current,
+            isActive: undefined,
+          }));
+        }}
+        onInputChange={updateEditField}
+      />
+
+      <div className="flex justify-end gap-2">
+        <Link
+          href="/admin/subcategories"
+          className={buttonVariants({ variant: "outline" })}
+        >
+          Скасувати
+        </Link>
+        <Button type="submit" disabled={isPending || categoryChangeBlocked}>
+          {activeAction === "update" ? "Зберігаємо..." : "Зберегти"}
+        </Button>
+      </div>
+    </form>
   );
 }

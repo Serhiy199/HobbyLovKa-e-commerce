@@ -5,7 +5,7 @@ import {
 } from "@prisma/client";
 import { z } from "zod";
 
-import { resolveSlug, slugifyText } from "@/lib/text/slug";
+import { resolveSlug } from "@/lib/text/slug";
 
 function optionalTrimmedString(max: number) {
   return z
@@ -57,14 +57,14 @@ function slugFromNameSchema() {
     );
 }
 
-function automaticCategorySlugSchema() {
+function automaticSlugFromNameSchema() {
   return z
     .object({
       name: requiredName(120),
     })
     .transform((value) => ({
       ...value,
-      slug: slugifyText(value.name),
+      slug: resolveSlug(undefined, value.name),
     }))
     .pipe(
       z.object({
@@ -478,7 +478,7 @@ function validateFieldOptions(
 }
 
 const categoryBaseSchema = z.intersection(
-  automaticCategorySlugSchema(),
+  automaticSlugFromNameSchema(),
   z.object({
     image: optionalImageField(),
     description: optionalTrimmedLongText(),
@@ -498,7 +498,7 @@ export const updateCategorySchema = categoryBaseSchema.and(
 );
 
 const subcategoryBaseSchema = z.intersection(
-  slugFromNameSchema(),
+  automaticSlugFromNameSchema(),
   z.object({
     categoryId: idField(),
     description: optionalTrimmedLongText(),

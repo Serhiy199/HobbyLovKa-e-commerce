@@ -43,7 +43,11 @@ export async function getAdminCategoriesPageData(selectedId?: string) {
 export async function getAdminSubcategoriesPageData(selectedId?: string) {
   const categories = await listAdminCategories();
   const subcategories = await listAdminSubcategories();
-  const resolvedSelectedId = resolveSelectedId(subcategories, selectedId);
+  const resolvedSelectedId =
+    selectedId &&
+    subcategories.some((subcategory) => subcategory.id === selectedId)
+      ? selectedId
+      : undefined;
   const selectedSubcategory = resolvedSelectedId
     ? await getAdminSubcategoryById(resolvedSelectedId)
     : null;
