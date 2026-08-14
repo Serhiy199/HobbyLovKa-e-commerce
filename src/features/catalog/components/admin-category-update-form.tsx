@@ -32,7 +32,6 @@ type CategoryFormValues = {
   name: string;
   seoDescription: string;
   seoTitle: string;
-  slug: string;
   sortOrder: string;
 };
 
@@ -46,7 +45,6 @@ type SelectedCategory = {
   name: string;
   seoDescription: string | null;
   seoTitle: string | null;
-  slug: string;
   sortOrder: number;
 };
 
@@ -61,7 +59,6 @@ const createInitialValues: CategoryFormValues = {
   name: "",
   seoDescription: "",
   seoTitle: "",
-  slug: "",
   sortOrder: "0",
 };
 
@@ -73,7 +70,6 @@ function buildEditValues(category: SelectedCategory): CategoryFormValues {
     name: category.name,
     seoDescription: category.seoDescription ?? "",
     seoTitle: category.seoTitle ?? "",
-    slug: category.slug,
     sortOrder: category.sortOrder.toString(),
   };
 }
@@ -88,7 +84,6 @@ function mapFieldErrors(
     name: fieldErrors?.name?.[0],
     seoDescription: fieldErrors?.seoDescription?.[0],
     seoTitle: fieldErrors?.seoTitle?.[0],
-    slug: fieldErrors?.slug?.[0],
     sortOrder: fieldErrors?.sortOrder?.[0],
   };
 }
@@ -125,15 +120,24 @@ function CategoryFormFields({
           error={errors.name}
           required
         />
-        <AdminInputField
-          id={`${heading}-slug`}
-          name="slug"
-          label="Slug"
-          value={values.slug}
-          onChange={(event) => onInputChange("slug", event.target.value)}
-          error={errors.slug}
-          hint="Можна залишити порожнім, тоді slug згенерується з назви."
-        />
+        <AdminField label="Статус" error={errors.isActive}>
+          <div className="border-border/70 bg-muted/30 flex items-start justify-between gap-4 rounded-lg border px-4 py-3">
+            <div className="space-y-1">
+              <p className="text-sm font-medium">
+                {values.isActive ? "Активна" : "Неактивна"}
+              </p>
+              <p className="text-muted-foreground text-sm leading-6">
+                Неактивна категорія лишається в базі, але не має показуватися в
+                каталозі.
+              </p>
+            </div>
+            <Switch
+              checked={values.isActive}
+              onCheckedChange={onActiveChange}
+              aria-label="Активна категорія"
+            />
+          </div>
+        </AdminField>
         <AdminInputField
           id={`${heading}-sort-order`}
           name="sortOrder"
@@ -149,7 +153,7 @@ function CategoryFormFields({
         <CatalogImageUploadField
           id={`${heading}-image`}
           entityType="category"
-          entitySlug={values.slug || values.name}
+          entitySlug={values.name}
           label="Фото категорії"
           value={values.image}
           onChange={onImageChange}
@@ -188,24 +192,6 @@ function CategoryFormFields({
           rows={3}
           hint={`Якщо залишити порожнім: ${values.name}: замовити за вигідною ціною в Україні у VapeShop. Швидке оформлення, зручна доставка по Україні та актуальний асортимент.`}
         />
-        <AdminField label="Статус" error={errors.isActive}>
-          <div className="border-border/70 bg-muted/30 flex items-start justify-between gap-4 rounded-lg border px-4 py-3">
-            <div className="space-y-1">
-              <p className="text-sm font-medium">
-                {values.isActive ? "Активна" : "Неактивна"}
-              </p>
-              <p className="text-muted-foreground text-sm leading-6">
-                Неактивна категорія лишається в базі, але не має показуватися в
-                каталозі.
-              </p>
-            </div>
-            <Switch
-              checked={values.isActive}
-              onCheckedChange={onActiveChange}
-              aria-label="Активна категорія"
-            />
-          </div>
-        </AdminField>
       </div>
     </AdminFormSection>
   );
@@ -299,7 +285,7 @@ export function AdminCategoryUpdateForm({
           title: "Категорію створено",
           message: result.data.name,
         });
-        router.push(`/admin/categories?selected=${result.data.id}`);
+        router.push("/admin/categories");
         router.refresh();
       } finally {
         setActiveAction(null);

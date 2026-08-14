@@ -10,6 +10,8 @@ const ukrainianSlugCases = [
   ["Вишивання", "vyshyvannya"],
   ["Одяг", "odyag"],
   ["Тканини та фурнітура", "tkanyny-ta-furnitura"],
+  ["Аксесуари для рукоділля", "aksesuari-dlya-rukodillya"],
+  ["Матеріали для рукоділля", "materialy-dlya-rukodillya"],
 ];
 
 test("transliterates Ukrainian category names into normalized slugs", () => {
@@ -32,4 +34,8 @@ test("generates a slug only when the manual value is blank", () => {
     resolveSlug("   ", "Набори для вишивання"),
     "nabory-dlya-vyshyvannya",
   );
+});
+
+test("regenerates the category slug from the resulting name", () => {
+  assert.equal(slugifyText("Матеріали"), "materialy");
 });

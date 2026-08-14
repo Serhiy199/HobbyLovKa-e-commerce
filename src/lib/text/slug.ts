@@ -40,12 +40,27 @@ const transliterationMap: Record<string, string> = {
 
 export function slugifyText(value: string, separator = "-") {
   const normalizedSeparator = separator === "_" ? "_" : "-";
+  const normalizedValue = value.trim().toLowerCase();
+  const characters = normalizedValue.split("");
 
-  return value
-    .trim()
-    .toLowerCase()
-    .split("")
-    .map((char) => transliterationMap[char] ?? char)
+  return characters
+    .map((char, index) => {
+      const nextCharacter = characters[index + 1];
+      const isWordEnd =
+        !nextCharacter ||
+        !/[\u0430-\u044f\u0456\u0457\u0454\u0491]/.test(nextCharacter);
+
+      if (
+        char === "\u0438" &&
+        characters[index - 2] === "\u0430" &&
+        characters[index - 1] === "\u0440" &&
+        isWordEnd
+      ) {
+        return "i";
+      }
+
+      return transliterationMap[char] ?? char;
+    })
     .join("")
     .replace(/['\u2019`]/g, "")
     .replace(/[^a-z0-9]+/g, normalizedSeparator)
@@ -59,7 +74,10 @@ export function slugifyText(value: string, separator = "-") {
     );
 }
 
-export function resolveSlug(value: string | null | undefined, fallback: string) {
+export function resolveSlug(
+  value: string | null | undefined,
+  fallback: string,
+) {
   const manualSlug = value?.trim();
 
   return manualSlug || slugifyText(fallback);

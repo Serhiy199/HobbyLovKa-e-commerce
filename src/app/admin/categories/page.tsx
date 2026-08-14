@@ -12,6 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { AdminCategoryUpdateForm } from "@/features/catalog/components/admin-category-update-form";
+import { AdminCategoryStatusToggle } from "@/features/catalog/components/admin-category-status-toggle";
 import { getAdminCategoriesPageData } from "@/server/queries/admin-catalog.query";
 
 type SearchParams = Promise<{ selected?: string }>;
@@ -22,9 +23,9 @@ export default async function AdminCategoriesPage({
   searchParams?: SearchParams;
 }) {
   const params = searchParams ? await searchParams : {};
-  const { categories, selectedCategory } = await getAdminCategoriesPageData(
-    params.selected,
-  );
+  const selectedId = params.selected?.trim() || undefined;
+  const { categories, selectedCategory } =
+    await getAdminCategoriesPageData(selectedId);
 
   const activeCount = categories.filter((category) => category.isActive).length;
   const totalSubcategories = categories.reduce(
@@ -153,9 +154,11 @@ export default async function AdminCategoriesPage({
                 header: "Статус",
                 className: "w-36",
                 cell: (category) => (
-                  <Badge variant={category.isActive ? "secondary" : "outline"}>
-                    {category.isActive ? "Активна" : "Неактивна"}
-                  </Badge>
+                  <AdminCategoryStatusToggle
+                    categoryId={category.id}
+                    categoryName={category.name}
+                    initialIsActive={category.isActive}
+                  />
                 ),
               },
               {
@@ -189,13 +192,13 @@ export default async function AdminCategoriesPage({
         </div>
       </AdminSectionCard>
 
-      {selectedCategory ? (
+      {selectedId && selectedCategory ? (
         <AdminSectionCard
           title={`Редагування категорії: ${selectedCategory.name}`}
           description="Змініть дані вибраної категорії або скасуйте редагування."
         >
           <AdminCategoryUpdateForm
-            key={selectedCategory.id}
+            key={`${selectedCategory.id}:${selectedCategory.name}:${selectedCategory.isActive}`}
             category={{
               description: selectedCategory.description,
               id: selectedCategory.id,
@@ -204,7 +207,6 @@ export default async function AdminCategoriesPage({
               name: selectedCategory.name,
               seoDescription: selectedCategory.seoDescription,
               seoTitle: selectedCategory.seoTitle,
-              slug: selectedCategory.slug,
               sortOrder: selectedCategory.sortOrder,
             }}
           />
