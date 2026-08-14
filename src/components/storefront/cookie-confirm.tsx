@@ -6,9 +6,6 @@ import { CookieIcon, XIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-const AGE_GATE_STORAGE_KEY = "voodoo-vape-age-confirmed";
-const AGE_GATE_SESSION_KEY = "voodoo-vape-age-session";
-const AGE_GATE_COOKIE_KEY = "voodoo_vape_age_confirmed";
 const COOKIE_CONFIRM_STORAGE_KEY = "voodoo-vape-cookie-confirmed";
 const COOKIE_CONFIRM_SESSION_KEY = "voodoo-vape-cookie-session";
 const COOKIE_CONFIRM_COOKIE_KEY = "voodoo_vape_cookie_confirmed";
@@ -29,14 +26,6 @@ function setConsentCookie(name: string) {
   document.cookie = `${name}=true; Max-Age=${ONE_YEAR_IN_SECONDS}; Path=/; SameSite=Lax`;
 }
 
-function hasAgeConfirmation() {
-  return (
-    window.localStorage.getItem(AGE_GATE_STORAGE_KEY) === "true" ||
-    window.sessionStorage.getItem(AGE_GATE_SESSION_KEY) === "true" ||
-    getCookie(AGE_GATE_COOKIE_KEY) === "true"
-  );
-}
-
 function hasCookieConfirmation() {
   return (
     window.localStorage.getItem(COOKIE_CONFIRM_STORAGE_KEY) === "true" ||
@@ -47,28 +36,24 @@ function hasCookieConfirmation() {
 
 export function CookieConfirm() {
   const [isReady, setIsReady] = useState(false);
-  const [isAgeConfirmed, setIsAgeConfirmed] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(true);
 
   useEffect(() => {
     const syncState = () => {
-      setIsAgeConfirmed(hasAgeConfirmation());
       setIsConfirmed(hasCookieConfirmation());
       setIsReady(true);
     };
 
     const timeoutId = window.setTimeout(syncState, 0);
-    window.addEventListener("voodoo-vape-age-confirmed", syncState);
     window.addEventListener("storage", syncState);
 
     return () => {
       window.clearTimeout(timeoutId);
-      window.removeEventListener("voodoo-vape-age-confirmed", syncState);
       window.removeEventListener("storage", syncState);
     };
   }, []);
 
-  if (!isReady || !isAgeConfirmed || isConfirmed) {
+  if (!isReady || isConfirmed) {
     return null;
   }
 
@@ -95,7 +80,7 @@ export function CookieConfirm() {
             Cookie та сесійні дані
           </h2>
           <p id="cookie-confirm-description" className="text-muted-foreground text-sm leading-5">
-            Ми зберігаємо підтвердження віку, cookie notice і базові сесійні
+            Ми зберігаємо підтвердження cookie notice і базові сесійні
             налаштування для коректної роботи магазину. Детальніше у{" "}
             <Link href="/privacy" className="text-primary underline-offset-4 hover:underline">
               політиці конфіденційності

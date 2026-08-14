@@ -14,7 +14,6 @@ import {
 
 export const storefrontBrand = {
   name: "Voodoo Vape",
-  legalAgeNotice: "Сайт призначений виключно для осіб віком 18+",
   tagline: "vape shop та аксесуари",
   logoSrc: "/images/site-logo.png",
 };

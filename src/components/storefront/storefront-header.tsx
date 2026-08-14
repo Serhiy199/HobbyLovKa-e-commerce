@@ -11,7 +11,6 @@ import { StorefrontCartLink } from "@/components/storefront/cart-link";
 import { StorefrontLogo } from "@/components/storefront/storefront-logo";
 import { StorefrontMobileMenu } from "@/components/storefront/mobile-menu";
 import { StorefrontSearchForm } from "@/components/storefront/storefront-search-form";
-import { storefrontBrand } from "@/components/storefront/storefront-config";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
@@ -47,7 +46,6 @@ export async function StorefrontHeader() {
               +38 (080) 033-50-94
             </span>
           </div>
-          <p className="truncate">{storefrontBrand.legalAgeNotice}</p>
           <nav
             className="hidden items-center gap-4 lg:flex"
             aria-label="Корисні посилання"

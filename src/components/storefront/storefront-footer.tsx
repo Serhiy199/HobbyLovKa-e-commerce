@@ -49,13 +49,6 @@ export async function StorefrontFooter() {
         })}
       </section>
 
-      <div className="border-y border-border/70 bg-sky-50 px-4 py-3 text-center text-sm font-medium text-blue-900 sm:px-6">
-        Сайт kalyan-city.com.ua призначений{" "}
-        <span className="text-primary">виключно для осіб віком 18+</span>.
-        Продаж електронних сигарет та нікотиновмісної продукції неповнолітнім
-        заборонений законом.
-      </div>
-
       <Separator className="bg-[#2b211a]" />
 
       <div className="bg-[#17130f] text-[#f7f1e8]">
@@ -63,8 +56,8 @@ export async function StorefrontFooter() {
           <div className="space-y-4">
             <StorefrontLogo />
             <p className="max-w-sm text-sm leading-6 text-[#c9beb1]">
-              Магазин для повнолітніх клієнтів із фокусом на зрозумілий каталог,
-              швидкий пошук, прозорі умови та зручний шлях до покупки.
+              Магазин із фокусом на зрозумілий каталог, швидкий пошук, прозорі
+              умови та зручний шлях до покупки.
             </p>
             <div className="grid gap-2 text-sm">
               <span className="inline-flex items-center gap-2">
@@ -113,17 +106,13 @@ export async function StorefrontFooter() {
                 </Link>
               );
             })}
-            <span className="pt-2 text-xs leading-5 text-[#c9beb1]">
-              Продаж електронних сигарет і нікотиновмісної продукції
-              неповнолітнім заборонений.
-            </span>
           </FooterColumn>
         </div>
       </div>
 
       <div className="border-t border-[#2b211a] bg-[#17130f]">
         <div className="mx-auto flex w-full max-w-screen-2xl flex-col gap-2 px-4 py-4 text-xs text-[#c9beb1] sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
-          <p>© 2026 Voodoo Vape. Тільки для повнолітніх клієнтів.</p>
+          <p>© 2026 Voodoo Vape.</p>
           <div className="flex gap-4">
             <Link href="/privacy">Політика конфіденційності</Link>
             <Link href="/terms">Умови використання</Link>
