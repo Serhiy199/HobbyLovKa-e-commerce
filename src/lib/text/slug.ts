@@ -2,17 +2,17 @@ const transliterationMap: Record<string, string> = {
   "\u0430": "a",
   "\u0431": "b",
   "\u0432": "v",
-  "\u0433": "h",
+  "\u0433": "g",
   "\u0491": "g",
   "\u0434": "d",
   "\u0435": "e",
-  "\u0454": "ie",
+  "\u0454": "ye",
   "\u0436": "zh",
   "\u0437": "z",
   "\u0438": "y",
   "\u0456": "i",
-  "\u0457": "i",
-  "\u0439": "i",
+  "\u0457": "yi",
+  "\u0439": "y",
   "\u043a": "k",
   "\u043b": "l",
   "\u043c": "m",
@@ -30,8 +30,8 @@ const transliterationMap: Record<string, string> = {
   "\u0448": "sh",
   "\u0449": "shch",
   "\u044c": "",
-  "\u044e": "iu",
-  "\u044f": "ia",
+  "\u044e": "yu",
+  "\u044f": "ya",
   "\u0451": "yo",
   "\u044b": "y",
   "\u044d": "e",
@@ -57,6 +57,12 @@ export function slugifyText(value: string, separator = "-") {
       new RegExp(`${normalizedSeparator}{2,}`, "g"),
       normalizedSeparator,
     );
+}
+
+export function resolveSlug(value: string | null | undefined, fallback: string) {
+  const manualSlug = value?.trim();
+
+  return manualSlug || slugifyText(fallback);
 }
 
 export function fieldKeyFromLabel(value: string) {

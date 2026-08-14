@@ -169,10 +169,7 @@ export default async function AdminCategoriesPage({
                       scroll={false}
                       className={buttonVariants({
                         size: "sm",
-                        variant:
-                          selectedCategory?.id === category.id
-                            ? "secondary"
-                            : "outline",
+                        variant: "edit",
                       })}
                     >
                       Редагувати

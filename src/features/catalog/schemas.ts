@@ -5,6 +5,8 @@ import {
 } from "@prisma/client";
 import { z } from "zod";
 
+import { resolveSlug } from "@/lib/text/slug";
+
 function optionalTrimmedString(max: number) {
   return z
     .string()
@@ -37,54 +39,6 @@ function slugField() {
     });
 }
 
-function slugify(value: string) {
-  const transliterationMap: Record<string, string> = {
-    а: "a",
-    б: "b",
-    в: "v",
-    г: "h",
-    ґ: "g",
-    д: "d",
-    е: "e",
-    є: "ie",
-    ж: "zh",
-    з: "z",
-    и: "y",
-    і: "i",
-    ї: "i",
-    й: "i",
-    к: "k",
-    л: "l",
-    м: "m",
-    н: "n",
-    о: "o",
-    п: "p",
-    р: "r",
-    с: "s",
-    т: "t",
-    у: "u",
-    ф: "f",
-    х: "kh",
-    ц: "ts",
-    ч: "ch",
-    ш: "sh",
-    щ: "shch",
-    ю: "iu",
-    я: "ia",
-  };
-
-  return value
-    .trim()
-    .toLowerCase()
-    .split("")
-    .map((char) => transliterationMap[char] ?? char)
-    .join("")
-    .replace(/['’`]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .replace(/-{2,}/g, "-");
-}
-
 function slugFromNameSchema() {
   return z
     .object({
@@ -93,8 +47,7 @@ function slugFromNameSchema() {
     })
     .transform((value) => ({
       ...value,
-      slug:
-        value.slug && value.slug.length > 0 ? value.slug : slugify(value.name),
+      slug: resolveSlug(value.slug, value.name),
     }))
     .pipe(
       z.object({
